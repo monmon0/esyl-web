@@ -1,69 +1,138 @@
 import Image from "next/image";
+import { Monsieur_La_Doulaise } from "next/font/google";
+import { HeroKeyholeReveal } from "@/components/hero-keyhole-reveal";
+import { HeroSoundStage } from "@/components/hero-sound-stage";
+import { LiquidBlueShader } from "@/components/liquid-blue-shader";
+import { Signature } from "@/components/signature";
+import { TextAlongPath } from "@/components/text-along-path";
+import { NARISS_ACCENT_BLUE, NARISS_BLACK, NARISS_BLUE } from "@/lib/colors";
+
+const PROFILE_STATS = ["Race", "Element", "Domain", "Affinity"];
+
+const narissTitleFont = Monsieur_La_Doulaise({
+  weight: "400",
+  subsets: ["latin"],
+});
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
+    <HeroKeyholeReveal
+      hero={
+        <section
+          className="absolute inset-0 h-full w-full overflow-hidden"
+          style={{ backgroundColor: NARISS_BLUE }}
+        >
+          <HeroSoundStage src="/Nariss/final.mp4">
+            <Signature
+              text="Nariss's Profile"
+              color={NARISS_BLUE}
+              fontSize={48}
+              duration={1.5}
+              delay={2}
+              className="absolute bottom-10 left-1/2 z-10 h-auto w-[90vw] max-w-[90vw] -translate-x-1/2 md:bottom-16 md:h-auto md:w-auto md:max-w-[70vw]"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+          </HeroSoundStage>
+        </section>
+      }
+      next={
+        <section
+          className="relative h-full w-full overflow-hidden"
+          style={{ backgroundColor: NARISS_BLACK }}
+        >
+          <Image
+            src="/Nariss/Nariss 22 4 2026.png"
+            alt=""
+            aria-hidden
+            fill
+            sizes="100vw"
+            className="pointer-events-none object-cover opacity-20"
+          />
+
+          {/* big blue arc — sized in vw so it always encloses more than half
+              the screen width, bulging in from the right regardless of
+              column width */}
+          <div className="pointer-events-none absolute top-[22%] left-[85%] z-0 aspect-square h-[200%] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-full md:top-[50%] md:left-[80%] md:h-[120vw] md:max-h-[140vh]">
+            <LiquidBlueShader className="h-full w-full" />
+          </div>
+
+          <div className="relative z-10 grid h-full w-full grid-cols-1 md:grid-cols-2">
+            <div className="relative p-6">
+              <Image
+                src="/Nariss/Nariss des 1.png"
+                alt="Nariss character design"
+                fill
+                sizes="(min-width: 768px) 50vw, 100vw"
+                className="object-contain drop-shadow-2xl"
+              />
+            </div>
+
+            <div className="relative flex min-h-0 items-center justify-center">
+              <div className="relative flex aspect-[1200/537] w-72 items-center justify-center sm:w-96 md:w-[28rem]">
+                <Image
+                  src="/name-border.png"
+                  alt=""
+                  aria-hidden
+                  fill
+                  sizes="(min-width: 768px) 28rem, 24rem"
+                  className="object-contain"
+                />
+                <h2
+                  className={`${narissTitleFont.className} relative text-4xl text-slate-900 sm:text-5xl md:text-6xl`}
+                >
+                  Nariss
+                </h2>
+              </div>
+            </div>
+          </div>
+
+          {/* corner ornaments — border.png is authored as the bottom-left
+              piece; the other three corners reuse it rotated 90° at a time
+              (rotating 90° CW moves the bottom-left corner's content to the
+              top-left, 180° to the top-right, 270° to the bottom-right). */}
+          <div className="pointer-events-none absolute bottom-0 left-0 z-20 h-24 w-24 md:h-50 md:w-50">
+            <Image
+              src="/border.png"
+              alt=""
+              fill
+              sizes="144px"
+              className="object-contain"
+            />
+          </div>
+          <div className="pointer-events-none absolute top-[-7] left-0 z-20 h-24 w-24 rotate-90 md:h-50 md:w-50">
+            <Image
+              src="/border.png"
+              alt=""
+              fill
+              sizes="144px"
+              className="object-contain"
+            />
+          </div>
+          <div className="pointer-events-none absolute top-0 right-[-7] z-20 h-24 w-24 rotate-180 md:h-50 md:w-50">
+            <Image
+              src="/border.png"
+              alt=""
+              fill
+              sizes="144px"
+              className="object-contain"
+            />
+          </div>
+          <div className="pointer-events-none absolute right-0 bottom-[-7] z-20 h-24 w-24 -rotate-90 md:h-50 md:w-50">
+            <Image
+              src="/border.png"
+              alt=""
+              fill
+              sizes="144px"
+              className="object-contain"
+            />
+          </div>
+
+          <TextAlongPath
+            text="✦ Nariss's Character Profile ✦"
+            color={"#FFFFFF"}
+            className="pointer-events-none absolute bottom-2 left-1/2 z-20 w-[85%] max-w-xl -translate-x-1/2 md:bottom-6"
+          />
+        </section>
+      }
+    />
   );
 }
