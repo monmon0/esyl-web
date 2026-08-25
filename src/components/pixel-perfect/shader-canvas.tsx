@@ -157,6 +157,15 @@ const ShaderCanvas = ({
     const container = containerRef.current;
     if (!container) return;
 
+    // Coarse-pointer devices (phones/tablets) get a cheaper draw: no MSAA
+    // and a clamped pixel ratio. Antialiasing at full mobile DPR roughly
+    // quadruples fragment-shader work for these fbm-heavy shaders, which is
+    // what causes the dropped frames / WebGL context loss on mobile.
+    const isCoarsePointer =
+      typeof window !== "undefined" &&
+      window.matchMedia("(pointer: coarse)").matches;
+    const effectiveDpr = isCoarsePointer ? Math.min(dpr, 1.5) : dpr;
+
     const camera = new THREE.Camera();
     camera.position.z = 1;
 
@@ -189,10 +198,10 @@ const ShaderCanvas = ({
     scene.add(mesh);
 
     const renderer = new THREE.WebGLRenderer({
-      antialias: true,
+      antialias: !isCoarsePointer,
       powerPreference: "low-power",
     });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, dpr));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, effectiveDpr));
     container.appendChild(renderer.domElement);
 
     const canvas = renderer.domElement;

@@ -12,10 +12,19 @@ import { NARISS_ACCENT_BLUE, NARISS_GOLD } from "@/lib/colors";
 
 export function HeroSoundStage({
   src,
+  mobileSrc,
+  poster,
+  onReady,
   children,
 }: {
   src: string;
-  children: ReactNode;
+  /** Smaller/lower-bitrate rendition served to narrow (mobile) viewports. */
+  mobileSrc?: string;
+  /** First-frame still shown instantly while the video buffers. */
+  poster?: string;
+  /** Fires once the video has enough data to play through. */
+  onReady?: () => void;
+  children?: ReactNode;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -63,12 +72,20 @@ export function HeroSoundStage({
         <video
           ref={videoRef}
           className="absolute top-1/2 left-1/2 h-full w-full max-w-none -translate-x-1/2 -translate-y-1/2 object-cover md:h-[100vw] md:w-[100dvh] md:rotate-[-90deg]"
-          src={src}
+          poster={poster}
+          preload="auto"
           autoPlay
           muted
           loop
           playsInline
-        />
+          onLoadedData={onReady}
+        >
+          {/* Narrow viewports get the smaller, lower-bitrate rendition —
+              the browser picks the first matching <source> once, on load,
+              so this is evaluated at initial viewport width. */}
+          {mobileSrc && <source src={mobileSrc} media="(max-width: 767px)" type="video/mp4" />}
+          <source src={src} type="video/mp4" />
+        </video>
       </HeroWaveReveal>
       {children}
       {cursor && (

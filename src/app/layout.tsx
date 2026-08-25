@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { HamburgerMenu } from "@/components/hamburger-menu";
+import { LoadingProvider } from "@/components/loading-context";
 import { NotificationPopListener } from "@/components/notification-pop-listener";
+import { ScreenRippleLayer } from "@/components/screen-ripple";
+import { SiteFooter } from "@/components/site-footer";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -45,9 +48,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        {children}
-        <HamburgerMenu />
+        <LoadingProvider>
+          {children}
+          <SiteFooter />
+          <HamburgerMenu />
+        </LoadingProvider>
         <NotificationPopListener />
+        <ScreenRippleLayer />
       </body>
     </html>
   );

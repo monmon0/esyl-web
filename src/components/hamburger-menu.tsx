@@ -9,6 +9,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import gsap from "gsap";
+import { useLoading } from "@/components/loading-context";
 import { NARISS_BLUE } from "@/lib/colors";
 
 const RING_COUNT = 3;
@@ -26,6 +27,7 @@ const MENU_ITEMS: { label: string; href?: string }[] = [
 ];
 
 export function HamburgerMenu() {
+  const { loaded } = useLoading();
   const [open, setOpen] = useState(false);
   const ringRefs = useRef<(SVGEllipseElement | null)[]>([]);
 
@@ -52,7 +54,11 @@ export function HamburgerMenu() {
         onClick={() => setOpen((prev) => !prev)}
         aria-label={open ? "Close menu" : "Open menu"}
         aria-expanded={open}
-        className="fixed top-6 left-1/2 z-50 -translate-x-1/2 cursor-pointer"
+        tabIndex={loaded ? 0 : -1}
+        aria-hidden={!loaded}
+        className={`fixed top-6 left-1/2 z-50 -translate-x-1/2 cursor-pointer transition-opacity duration-500 ${
+          loaded ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
+        }`}
       >
         <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
           {Array.from({ length: RING_COUNT }).map((_, index) => {
@@ -67,7 +73,7 @@ export function HamburgerMenu() {
                 cy={CENTER + offset}
                 rx={RING_RX}
                 ry={RING_RY}
-                stroke={NARISS_BLUE}
+                stroke={"#fff"}
                 strokeWidth="2"
                 fill="none"
               />

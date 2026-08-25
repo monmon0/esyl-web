@@ -9,7 +9,7 @@ import gsap from "gsap";
  * in objectBoundingBox space (0-1) so this works at any element size.
  */
 
-const wavePath = (level: number, t: number) => {
+export const wavePath = (level: number, t: number) => {
   const base = 1 - level;
   const amp = 0.05 * Math.sin(Math.PI * Math.min(Math.max(level, 0), 1));
   const step = 1 / 40;
@@ -39,6 +39,14 @@ export function HeroWaveReveal({
     const container = containerRef.current;
     if (!container) return;
 
+    // Animating a blur filter over the video for the full reveal is the
+    // single most expensive thing on this page on mobile GPUs — blurring a
+    // playing <video> forces continuous software compositing. Coarse-pointer
+    // devices get a plain scale-in instead; the wave mask still reveals.
+    const isCoarsePointer =
+      typeof window !== "undefined" &&
+      window.matchMedia("(pointer: coarse)").matches;
+
     const state = { level: 0, t: 0 };
     const apply = () => {
       pathRef.current?.setAttribute("d", wavePath(state.level, state.t));
@@ -49,8 +57,10 @@ export function HeroWaveReveal({
     tl.to(state, { t: 7, duration: 2, ease: "none" }, 0);
     tl.fromTo(
       container,
-      { scale: 1.15, filter: "blur(12px)" },
-      { scale: 1, filter: "blur(0px)", duration: 2, ease: "power2.inOut" },
+      isCoarsePointer ? { scale: 1.15 } : { scale: 1.15, filter: "blur(12px)" },
+      isCoarsePointer
+        ? { scale: 1, duration: 2, ease: "power2.inOut" }
+        : { scale: 1, filter: "blur(0px)", duration: 2, ease: "power2.inOut" },
       0,
     );
 
