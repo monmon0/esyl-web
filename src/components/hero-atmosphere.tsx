@@ -1,10 +1,11 @@
 "use client";
 
 /**
- * Purely decorative light-ray layer for the hero. Sits between the
- * video/image backdrop and the foreground text (z-[5]) with pointer-events
- * disabled, so it never intercepts the sound-toggle click or the
- * wave-transition scroll. Static — the rays animate on their own internal
+ * Purely decorative light-ray layer for the hero. Sits underneath the
+ * video/image backdrop (negative z-index) with pointer-events disabled, so
+ * it never intercepts the sound-toggle click or the wave-transition scroll,
+ * and only peeks out around the backdrop's edges rather than washing over
+ * the character art. Static — the rays animate on their own internal
  * shader clock, not the mouse.
  */
 
@@ -24,7 +25,7 @@ export function HeroAtmosphere({ className }: { className?: string }) {
         reach={16}
         position={50}
         animation={{ animate: true, speed: 6 }}
-        style={{ zIndex: 0, mixBlendMode: "overlay", opacity: 0.5 }}
+        style={{ zIndex: 0, mixBlendMode: "overlay", opacity: 0.2 }}
       />
     </div>
   );

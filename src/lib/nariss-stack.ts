@@ -1,9 +1,7 @@
-// Every illustration under public/Nariss/gallery — except three files
-// (nariss.png, Nariss(1).png, "Nariss lore 1 animation đvvpng.png") between
-// 57–63MB each, which reliably hang Next's image optimizer for 45s+ and
-// never resolve within a reasonable request timeout. Re-add them once
-// they've been compressed/resized at the source. Titles borrowed from the
-// /gallery page's captions where that plate already named the same file.
+// Illustrations from Esyl's "Souls of Sea" release captions, re-encoded as
+// compact JPEGs (public/Nariss/gallery/*.jpg) from the original 10-70MB
+// source PNGs — those sources reliably hang Next's image optimizer for 45s+
+// and never resolve within a reasonable request timeout.
 export type NarissStackImage = {
   title: string;
   src: string;
@@ -11,27 +9,27 @@ export type NarissStackImage = {
 
 export const NARISS_STACK_IMAGES: NarissStackImage[] = [
   {
-    title: "Two Souls Beneath One Moon",
-    src: "/Nariss/gallery/nariss 14 5 2026 2.png",
+    title: "Where do we belong?",
+    src: "/Nariss/gallery/where-do-we-belong.jpg",
   },
   {
-    title: "The Watcher at World's Edge",
-    src: "/Nariss/gallery/Nariss 22 4 2026.png",
+    title: "As the tale unfolds",
+    src: "/Nariss/gallery/as-the-tale-unfolds.jpg",
   },
   {
-    title: "She Who Waits Behind the Arch",
-    src: "/Nariss/gallery/nariss 23 5 2026.png",
+    title: "Free as the wind, deep as the sea",
+    src: "/Nariss/gallery/free-as-the-wind.jpg",
   },
   {
-    title: "The Mirror Between Tides",
-    src: "/Nariss/gallery/Nariss lore 1black ver.png",
+    title: "Veil the truth",
+    src: "/Nariss/gallery/veil-the-truth.jpg",
   },
   {
-    title: "A Breath Held Underwater",
-    src: "/Nariss/gallery/Nariss face card 30 5 2026.png",
+    title: "Along the sea",
+    src: "/Nariss/along-the-sea-bg.jpg",
   },
   {
-    title: "Between Drafts",
-    src: "/Nariss/gallery/desktop-horizontal copy.png",
+    title: "Ngụ",
+    src: "/Nariss/gallery/ngu.jpg",
   },
 ];

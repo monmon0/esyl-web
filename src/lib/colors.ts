@@ -9,3 +9,7 @@ export const NARISS_GOLD = "oklch(87.9% 0.169 91.605)"; // Tailwind amber-300, m
 export const NARISS_BADGE_CREAM = "oklch(93% 0.02 85)";
 export const NARISS_BADGE_BORDER = "oklch(65% 0.035 85)";
 export const NARISS_BADGE_INK = "oklch(20% 0.01 85)";
+
+// Kraft-paper backdrop for the card-stack section (paired with the
+// `.paper-texture` mottling/grain layer in globals.css).
+export const NARISS_PAPER = "oklch(82% 0.03 75)";

@@ -1,10 +1,10 @@
 "use client";
 
 /**
- * Slow, serene water-ripple rings that spawn wherever the user clicks,
- * anywhere on the site, and fade out over a few seconds. Mounted once (see
- * layout.tsx) with a single document-level click listener, rather than
- * wired into every clickable component individually.
+ * Slow, serene water-ripple rings that spawn when the user presses a
+ * <button> (or an element marked data-pop), and fade out over a few
+ * seconds. Mounted once (see layout.tsx) with a single document-level click
+ * listener, rather than wired into every clickable component individually.
  *
  * Rendered through a portal to <body> so the rings sit in true viewport
  * space regardless of any transformed ancestor near the click (several of
@@ -52,6 +52,9 @@ export function ScreenRippleLayer() {
 
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (!target?.closest("button, [data-pop]")) return;
+
       setRipples((prev) => [
         ...prev,
         { id: nextRippleId++, x: event.clientX, y: event.clientY },

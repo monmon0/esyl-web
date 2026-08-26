@@ -78,7 +78,10 @@ export function HeroSoundStage({
           muted
           loop
           playsInline
-          onLoadedData={onReady}
+          onLoadedData={() => {
+            console.log("DEBUG hero-sound-stage onLoadedData fired, onReady=", typeof onReady);
+            onReady?.();
+          }}
         >
           {/* Narrow viewports get the smaller, lower-bitrate rendition —
               the browser picks the first matching <source> once, on load,

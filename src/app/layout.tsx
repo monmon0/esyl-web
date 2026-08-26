@@ -49,7 +49,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col">
         <LoadingProvider>
-          {children}
+          <div className="relative z-10 flex flex-1 flex-col">{children}</div>
           <SiteFooter />
           <HamburgerMenu />
         </LoadingProvider>

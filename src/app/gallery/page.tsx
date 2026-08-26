@@ -12,10 +12,10 @@ const PLATES: {
 }[] = [
   {
     label: "Chapter I",
-    title: "Two Souls Beneath One Moon",
+    title: "Along the Sea",
     caption:
       "They say the crescent above the hollow keeps two faces turned from each other — one who remembers the sea, and one who forgot she ever had a tail.",
-    src: "/Nariss/nariss 14 5 2026 2.png",
+    src: "/Nariss/gallery/along the sea.png",
     width: 7200,
     height: 13343,
   },

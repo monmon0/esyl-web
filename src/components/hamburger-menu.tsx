@@ -7,6 +7,7 @@
  */
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import gsap from "gsap";
 import { useLoading } from "@/components/loading-context";
@@ -29,7 +30,22 @@ const MENU_ITEMS: { label: string; href?: string }[] = [
 export function HamburgerMenu() {
   const { loaded } = useLoading();
   const [open, setOpen] = useState(false);
+  const [onCardStack, setOnCardStack] = useState(false);
   const ringRefs = useRef<(SVGEllipseElement | null)[]>([]);
+
+  // Card stack has a light paper background, so the white stroke goes
+  // invisible there — swap to the brand blue while it's behind the toggle.
+  useEffect(() => {
+    const target = document.getElementById("card-stack");
+    if (!target) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setOnCardStack(entry.isIntersecting),
+      { rootMargin: "-90px 0px 0px 0px", threshold: 0 },
+    );
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     ringRefs.current.forEach((ring, index) => {
@@ -73,9 +89,10 @@ export function HamburgerMenu() {
                 cy={CENTER + offset}
                 rx={RING_RX}
                 ry={RING_RY}
-                stroke={"#fff"}
+                stroke={onCardStack ? NARISS_BLUE : "#fff"}
                 strokeWidth="2"
                 fill="none"
+                style={{ transition: "stroke 0.4s ease" }}
               />
             );
           })}
@@ -90,6 +107,14 @@ export function HamburgerMenu() {
         }`}
       >
         <nav className="flex h-full w-full flex-col items-center justify-center gap-5">
+          <Link
+            href="/"
+            onClick={() => setOpen(false)}
+            aria-label="Go to landing page"
+            className="mb-2 transition-opacity hover:opacity-70"
+          >
+            <Image src="/logo.png" alt="" aria-hidden width={56} height={43} className="h-14 w-auto" />
+          </Link>
           {MENU_ITEMS.map((item) =>
             item.href ? (
               <Link

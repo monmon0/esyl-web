@@ -68,9 +68,9 @@ export function GalleryPlate({
         >
           {label}
         </span>
-        <h2 className="mt-3 font-serif text-3xl text-white md:text-4xl">
+        {/* <h2 className="mt-3 font-serif text-3xl text-white md:text-4xl">
           {title}
-        </h2>
+        </h2> */}
         <p className="mt-4 font-serif text-base leading-relaxed text-white/70 italic">
           {caption}
         </p>

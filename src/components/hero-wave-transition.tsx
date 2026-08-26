@@ -96,9 +96,16 @@ export function HeroWaveTransition({
         </svg>
       </div>
       {/* Scroll target for links into the fully-revealed section behind the
-          wave — anchoring here (rather than the root's own top) lands the
-          jump at "bottom bottom" of the scroll range, once fully revealed. */}
-      <div id="profile" className="pointer-events-none absolute bottom-0 h-px w-full" />
+          wave. The sticky box (h-dvh) is pinned for exactly one viewport
+          height of scroll inside this h-[200dvh] root — i.e. while the
+          anchor's container-relative offset is within [0, 100dvh] — and the
+          wave finishes rising (state.level hits 1) at progress ≈ 0.952 of
+          that same range, i.e. ~95.2dvh. Anchoring past 100dvh (e.g. at the
+          root's own bottom-0) lands scrollIntoView's target after the pin
+          has already released into NarissCardStack. Sitting inside the
+          [95.2dvh, 100dvh] window keeps the jump on the fully-revealed,
+          still-pinned "next" section instead. */}
+      <div id="profile" className="pointer-events-none absolute top-[97dvh] h-px w-full" />
     </div>
   );
 }
