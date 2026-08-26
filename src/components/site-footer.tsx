@@ -7,7 +7,7 @@ import { NARISS_BLACK, NARISS_GOLD } from "@/lib/colors";
 const FOOTER_LINKS: { label: string; href?: string }[] = [
   { label: "Profile", href: "/#profile" },
   { label: "Gallery", href: "/gallery" },
-  { label: "Settings" },
+  { label: "Settings", href: "/settings" },
 ];
 
 const footerTitleFont = Monsieur_La_Doulaise({

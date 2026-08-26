@@ -22,9 +22,9 @@ const OVAL_RY = 12;
 const CENTER = 40;
 
 const MENU_ITEMS: { label: string; href?: string }[] = [
-  { label: "Gallery", href: "/" },
   { label: "Profile", href: "/#profile" },
-  { label: "Settings" },
+  { label: "Gallery", href: "/gallery" },
+  { label: "Settings", href: "/settings" },
 ];
 
 export function HamburgerMenu() {

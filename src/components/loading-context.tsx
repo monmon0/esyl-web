@@ -11,7 +11,7 @@
 import { usePathname } from "next/navigation";
 import { createContext, useContext, useState, type ReactNode } from "react";
 
-const GATED_PATHS = new Set(["/"]);
+const GATED_PATHS = new Set(["/", "/settings"]);
 
 type LoadingContextValue = {
   loaded: boolean;

@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import Image from "next/image";
-import { Monsieur_La_Doulaise } from "next/font/google";
+import { Dancing_Script, Monsieur_La_Doulaise } from "next/font/google";
 import localFont from "next/font/local";
 import { HeroAtmosphere } from "@/components/hero-atmosphere";
 import { HeroSoundStage } from "@/components/hero-sound-stage";
@@ -23,9 +23,11 @@ import {
   NARISS_BADGE_INK,
   NARISS_BLACK,
   NARISS_BLUE,
+  NARISS_DEEP_BLUE,
   NARISS_GOLD,
 } from "@/lib/colors";
 import { NARISS_STACK_IMAGES } from "@/lib/nariss-stack";
+import { TORN_PAPER_CLIP } from "@/lib/torn-paper";
 
 const NARISS_STATS: Record<
   "vi" | "en",
@@ -79,12 +81,6 @@ const NARISS_INTRO_TITLE: Record<"vi" | "en", string> = {
   vi: "Giới thiệu",
 };
 
-// Ragged top/bottom edges on an otherwise rectangular scrap, like a strip
-// torn off a larger sheet — border/shadow follow this same path since both
-// are clipped along with the box.
-const TORN_PAPER_CLIP =
-  "polygon(0% 6%, 4% 2%, 9% 7%, 14% 1%, 19% 5%, 25% 0%, 31% 4%, 37% 1%, 43% 6%, 50% 2%, 57% 5%, 63% 0%, 69% 4%, 75% 1%, 81% 6%, 87% 2%, 93% 5%, 100% 1%, 100% 94%, 96% 98%, 91% 93%, 86% 99%, 81% 94%, 75% 98%, 69% 95%, 63% 99%, 57% 94%, 50% 98%, 43% 95%, 37% 99%, 31% 94%, 25% 98%, 19% 95%, 14% 99%, 9% 93%, 4% 98%, 0% 94%)";
-
 const NARISS_LORE: Record<"vi" | "en", string[]> = {
   vi: [
     "Rất lâu về trước, có một nàng tiên cá tò mò về thế giới của con người. Nàng thuộc về biển cả và biển cả là nhà của nàng. Nhờ ma thuật, nàng đã rời khỏi đáy biển và hòa vào cuộc sống của con người.",
@@ -119,6 +115,11 @@ const narissSpeakerFont = localFont({
   weight: "700",
 });
 
+const narissHandwrittenFont = Dancing_Script({
+  weight: "700",
+  subsets: ["latin"],
+});
+
 function LangToggle({
   lang,
   setLang,
@@ -132,10 +133,14 @@ function LangToggle({
     <div
       role="group"
       aria-label="Lore language"
-      className={`flex items-center gap-1 rounded-full border p-1 backdrop-blur-sm ${className ?? ""}`}
+      className={`flex items-center gap-1 border-2 px-2 py-1.5 ${className ?? ""}`}
       style={{
-        borderColor: "rgba(255,255,255,0.25)",
-        backgroundColor: "rgba(255,255,255,0.06)",
+        backgroundColor: NARISS_BADGE_CREAM,
+        backgroundImage: "url('/paper-bg.jpg')",
+        backgroundSize: "cover",
+        borderColor: NARISS_BADGE_BORDER,
+        clipPath: TORN_PAPER_CLIP,
+        filter: "drop-shadow(0 6px 10px rgba(0,0,0,0.3))",
       }}
     >
       {LORE_LANGUAGES.map((option) => (
@@ -145,19 +150,15 @@ function LangToggle({
           onClick={() => setLang(option.code)}
           aria-pressed={lang === option.code}
           aria-label={option.full}
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold tracking-wide uppercase transition-all duration-300"
-          style={
-            lang === option.code
-              ? {
-                  backgroundColor: NARISS_BADGE_CREAM,
-                  color: NARISS_BADGE_INK,
-                  boxShadow: `0 0 0 2px ${NARISS_GOLD}`,
-                }
-              : {
-                  backgroundColor: "transparent",
-                  color: "rgba(255,255,255,0.55)",
-                }
-          }
+          className={`${narissHandwrittenFont.className} flex h-9 w-10 shrink-0 items-center justify-center text-xl leading-none transition-all duration-300`}
+          style={{
+            color: NARISS_BADGE_INK,
+            opacity: lang === option.code ? 1 : 0.4,
+            textDecoration: lang === option.code ? "underline" : "none",
+            textDecorationColor: NARISS_DEEP_BLUE,
+            textDecorationThickness: "2px",
+            textUnderlineOffset: "3px",
+          }}
         >
           {option.label}
         </button>
@@ -234,6 +235,7 @@ export default function Home() {
   const [heroReady, setHeroReady] = useState(false);
   const [lang, setLang] = useState<"vi" | "en">("en");
   const [infoOpen, setInfoOpen] = useState(false);
+  const desktopHeroImageRef = useRef<HTMLImageElement>(null);
 
   // Gate the shared chrome (hamburger menu) on this page's hero, then
   // release the gate on the way out so other pages aren't affected.
@@ -256,14 +258,26 @@ export default function Home() {
     if (window.matchMedia("(min-width: 768px)").matches) markReady();
   };
 
+  // A cache-warm image (e.g. navigating here via <Link> after an earlier
+  // visit) can finish loading — and fire its native "load" event — before
+  // React has attached the onLoad handler below, permanently stranding
+  // `loaded` at false and hiding the hamburger menu. `complete` catches
+  // that race on mount, the same way the mobile hero video's readyState
+  // check does in hero-sound-stage.tsx.
+  useEffect(() => {
+    if (desktopHeroImageRef.current?.complete) {
+      handleImageReady();
+    }
+  }, []);
+
   return (
     <>
       <ScrollResistance boundaryId="profile" />
       <HeroWaveTransition
         hero={
           <section
-            className="absolute inset-0 h-full w-full overflow-hidden"
-            style={{ backgroundColor: NARISS_BLUE }}
+            className="absolute inset-0 h-full w-full overflow-hidden bg-cover bg-center"
+            style={{ backgroundImage: "url('/cover.png')" }}
           >
             <div className="relative h-full w-full overflow-hidden">
               {/* Mobile keeps the vertical hero video; desktop gets the
@@ -278,6 +292,7 @@ export default function Home() {
               </div>
               <HeroWaveReveal className="absolute inset-0 z-0 hidden h-full w-full md:block">
                 <Image
+                  ref={desktopHeroImageRef}
                   src="/Nariss/desktop-horizontal.png"
                   alt="Nariss"
                   fill

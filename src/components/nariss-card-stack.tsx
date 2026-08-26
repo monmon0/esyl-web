@@ -4,7 +4,8 @@ import { motion, useScroll, useTransform, type MotionValue } from "framer-motion
 import Image from "next/image";
 import Link from "next/link";
 import { useRef, type CSSProperties } from "react";
-import { NARISS_BADGE_INK, NARISS_PAPER } from "@/lib/colors";
+import { NARISS_BADGE_BORDER, NARISS_BADGE_CREAM, NARISS_BADGE_INK, NARISS_PAPER } from "@/lib/colors";
+import { TORN_PAPER_CLIP } from "@/lib/torn-paper";
 
 export type NarissCardStackImage = {
   title: string;
@@ -96,8 +97,15 @@ export function NarissCardStack({
 
           <Link
         href="/gallery"
-        className="relative z-30 md:mt-[30vh] md:mb-[10vh] rounded-full border border-black/20 px-7 py-3 text-sm font-medium whitespace-nowrap uppercase shadow-[0_8px_30px_rgba(0,0,0,0.15)] backdrop-blur-md transition-colors hover:bg-black/5"
-        style={{ color: NARISS_BADGE_INK }}
+        className="relative z-30 md:mt-[30vh] md:mb-[10vh] border-2 bg-cover bg-center px-8 py-3 text-sm font-medium tracking-wide whitespace-nowrap uppercase transition-transform hover:-translate-y-0.5 hover:scale-[1.03]"
+        style={{
+          backgroundColor: NARISS_BADGE_CREAM,
+          backgroundImage: "url('/paper-bg.jpg')",
+          borderColor: NARISS_BADGE_BORDER,
+          clipPath: TORN_PAPER_CLIP,
+          color: NARISS_BADGE_INK,
+          filter: "drop-shadow(0 8px 10px rgba(0,0,0,0.35))",
+        }}
       >
         See Gallery
       </Link>
