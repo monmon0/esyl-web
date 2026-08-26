@@ -2,7 +2,8 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import Image from "next/image";
-import { Dancing_Script, Monsieur_La_Doulaise } from "next/font/google";
+import { Monsieur_La_Doulaise } from "next/font/google";
+import localFont from "next/font/local";
 import { HeroAtmosphere } from "@/components/hero-atmosphere";
 import { HeroSoundStage } from "@/components/hero-sound-stage";
 import { HeroWaveReveal } from "@/components/hero-wave-reveal";
@@ -13,6 +14,7 @@ import { NarissPortrait } from "@/components/nariss-portrait";
 import { Signature } from "@/components/signature";
 import { SocialLinks } from "@/components/social-links";
 import { NarissCardStack } from "@/components/nariss-card-stack";
+import { Modal } from "@/components/modal";
 import { ScrollResistance } from "@/components/scroll-resistance";
 import {
   NARISS_ACCENT_BLUE,
@@ -21,29 +23,61 @@ import {
   NARISS_BADGE_INK,
   NARISS_BLACK,
   NARISS_BLUE,
+  NARISS_GOLD,
 } from "@/lib/colors";
 import { NARISS_STACK_IMAGES } from "@/lib/nariss-stack";
 
-const NARISS_STATS: { label: string; value: ReactNode }[] = [
-  { label: "Age", value: "???" },
-  {
-    label: "Height",
-    value: (
-      <>
-         <span className="opacity-60">HUMAN</span> 1m72
-      </>
-    ),
-  },
-  { label: "Species", value: "Mermaid" },
-];
+const NARISS_STATS: Record<
+  "vi" | "en",
+  { key: "age" | "height" | "species"; label: string; value: ReactNode }[]
+> = {
+  en: [
+    { key: "age", label: "Age", value: "???" },
+    {
+      key: "height",
+      label: "Height",
+      value: (
+        <>
+           <span className="opacity-60">HUMAN</span> 1m72
+        </>
+      ),
+    },
+    { key: "species", label: "Species", value: "Mermaid" },
+  ],
+  vi: [
+    { key: "age", label: "Tuổi", value: "???" },
+    {
+      key: "height",
+      label: "Chiều cao",
+      value: (
+        <>
+           <span className="opacity-60">NGƯỜI</span> 1m72
+        </>
+      ),
+    },
+    { key: "species", label: "Loài", value: "Tiên cá" },
+  ],
+};
 
 // Revealed only on hover/focus of the Height scrap — the mermaid's true
 // (original) form, tucked behind her everyday human height.
-const NARISS_MERMAID_HEIGHT = (
-  <>
-     <span className="opacity-60">MERMAID</span> 2m6
-  </>
-);
+const NARISS_MERMAID_HEIGHT: Record<"vi" | "en", ReactNode> = {
+  en: (
+    <>
+       <span className="opacity-60">MERMAID</span> 2m6
+    </>
+  ),
+  vi: (
+    <>
+       <span className="opacity-60">TIÊN CÁ</span> 2m6
+    </>
+  ),
+};
+
+const NARISS_INTRO_TITLE: Record<"vi" | "en", string> = {
+  en: "Introduction",
+  vi: "Giới thiệu",
+};
 
 // Ragged top/bottom edges on an otherwise rectangular scrap, like a strip
 // torn off a larger sheet — border/shadow follow this same path since both
@@ -70,20 +104,136 @@ const NARISS_DIALOGUE = [
   "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
 ];
 
+const LORE_LANGUAGES = [
+  { code: "vi", label: "VI", full: "Tiếng Việt" },
+  { code: "en", label: "EN", full: "English" },
+] as const;
+
 const narissTitleFont = Monsieur_La_Doulaise({
   weight: "400",
   subsets: ["latin"],
 });
 
-const narissSpeakerFont = Dancing_Script({
+const narissSpeakerFont = localFont({
+  src: "../../public/LastoriaBoldRegular.otf",
   weight: "700",
-  subsets: ["latin"],
 });
+
+function LangToggle({
+  lang,
+  setLang,
+  className,
+}: {
+  lang: "vi" | "en";
+  setLang: (lang: "vi" | "en") => void;
+  className?: string;
+}) {
+  return (
+    <div
+      role="group"
+      aria-label="Lore language"
+      className={`flex items-center gap-1 rounded-full border p-1 backdrop-blur-sm ${className ?? ""}`}
+      style={{
+        borderColor: "rgba(255,255,255,0.25)",
+        backgroundColor: "rgba(255,255,255,0.06)",
+      }}
+    >
+      {LORE_LANGUAGES.map((option) => (
+        <button
+          key={option.code}
+          type="button"
+          onClick={() => setLang(option.code)}
+          aria-pressed={lang === option.code}
+          aria-label={option.full}
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold tracking-wide uppercase transition-all duration-300"
+          style={
+            lang === option.code
+              ? {
+                  backgroundColor: NARISS_BADGE_CREAM,
+                  color: NARISS_BADGE_INK,
+                  boxShadow: `0 0 0 2px ${NARISS_GOLD}`,
+                }
+              : {
+                  backgroundColor: "transparent",
+                  color: "rgba(255,255,255,0.55)",
+                }
+          }
+        >
+          {option.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function NarissStatsList({ lang }: { lang: "vi" | "en" }) {
+  return (
+    <dl className="flex flex-row flex-wrap items-start justify-center gap-3">
+      {NARISS_STATS[lang].map((stat) => {
+        const isHeight = stat.key === "height";
+        return (
+          <div
+            key={stat.key}
+            tabIndex={isHeight ? 0 : undefined}
+            className={`group flex flex-col items-center gap-0.5 border-2 bg-cover bg-center px-5 py-3 text-center text-xs sm:text-sm ${isHeight ? "cursor-help" : ""}`}
+            style={{
+              backgroundColor: NARISS_BADGE_CREAM,
+              backgroundImage: "url('/paper-bg.jpg')",
+              borderColor: NARISS_BADGE_BORDER,
+              clipPath: TORN_PAPER_CLIP,
+              filter: "drop-shadow(0 8px 10px rgba(0,0,0,0.35))",
+            }}
+          >
+            <dt
+              className="text-[10px] font-medium tracking-[0.2em] uppercase opacity-70"
+              style={{ color: NARISS_BADGE_INK }}
+            >
+              {stat.label}
+            </dt>
+            {isHeight ? (
+              <div className="relative">
+                <dd
+                  className="font-medium whitespace-nowrap transition-opacity duration-300 group-hover:opacity-0 group-focus:opacity-0"
+                  style={{ color: NARISS_BADGE_INK }}
+                >
+                  {stat.value}
+                </dd>
+                <dd
+                  className="absolute inset-0 font-medium whitespace-nowrap opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus:opacity-100"
+                  style={{ color: NARISS_BADGE_INK }}
+                >
+                  {NARISS_MERMAID_HEIGHT[lang]}
+                </dd>
+              </div>
+            ) : (
+              <dd className="font-medium" style={{ color: NARISS_BADGE_INK }}>
+                {stat.value}
+              </dd>
+            )}
+          </div>
+        );
+      })}
+    </dl>
+  );
+}
+
+function NarissLoreParagraphs({ lang }: { lang: "vi" | "en" }) {
+  return (
+    <div lang={lang} className="space-y-3">
+      {NARISS_LORE[lang].map((paragraph, i) => (
+        <p key={i} className="text-sm leading-relaxed text-white/70 sm:text-base">
+          {paragraph}
+        </p>
+      ))}
+    </div>
+  );
+}
 
 export default function Home() {
   const { setLoaded } = useLoading();
   const [heroReady, setHeroReady] = useState(false);
   const [lang, setLang] = useState<"vi" | "en">("en");
+  const [infoOpen, setInfoOpen] = useState(false);
 
   // Gate the shared chrome (hamburger menu) on this page's hero, then
   // release the gate on the way out so other pages aren't affected.
@@ -93,7 +243,6 @@ export default function Home() {
   }, [setLoaded]);
 
   const markReady = () => {
-    console.log("DEBUG markReady called");
     setHeroReady(true);
     setLoaded(true);
   };
@@ -101,11 +250,9 @@ export default function Home() {
   // Only the media the current breakpoint actually renders should gate
   // readiness — the other one loads in the background regardless.
   const handleVideoReady = () => {
-    console.log("DEBUG handleVideoReady called, isDesktop=", window.matchMedia("(min-width: 768px)").matches);
     if (!window.matchMedia("(min-width: 768px)").matches) markReady();
   };
   const handleImageReady = () => {
-    console.log("DEBUG handleImageReady called, isDesktop=", window.matchMedia("(min-width: 768px)").matches);
     if (window.matchMedia("(min-width: 768px)").matches) markReady();
   };
 
@@ -166,6 +313,15 @@ export default function Home() {
                   Character created by Esyl
                 </p>
               </div>
+              <div
+                className={`absolute inset-x-0 bottom-4 z-10 flex flex-col items-center gap-0.5 px-4 text-center text-[10px] tracking-wide transition-opacity duration-700 md:hidden ${
+                  heroReady ? "opacity-100" : "opacity-0"
+                }`}
+                style={{ color: NARISS_ACCENT_BLUE }}
+              >
+                <p>Music: @Anhthư Masa</p>
+                <p>Animation: @Ly Ưu</p>
+              </div>
             </div>
           </section>
         }
@@ -187,51 +343,60 @@ export default function Home() {
               <div
                 role="group"
                 aria-label="Lore language"
-                className="order-2 flex items-center justify-center gap-3 pb-4 md:order-1 md:h-full md:flex-col md:justify-center md:gap-4 md:pb-0"
+                className="hidden md:order-1 md:flex md:h-full md:flex-col md:items-center md:justify-center md:gap-3"
               >
-                {(
-                  [
-                    { code: "vi", label: "VI", full: "Tiếng Việt" },
-                    { code: "en", label: "EN", full: "English" },
-                  ] as const
-                ).map((option) => (
-                  <button
-                    key={option.code}
-                    type="button"
-                    onClick={() => setLang(option.code)}
-                    aria-pressed={lang === option.code}
-                    aria-label={option.full}
-                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 text-xs font-medium tracking-wide uppercase transition-colors"
-                    style={
-                      lang === option.code
-                        ? {
-                            backgroundColor: NARISS_BADGE_CREAM,
-                            borderColor: NARISS_BADGE_BORDER,
-                            color: NARISS_BADGE_INK,
-                          }
-                        : {
-                            backgroundColor: "transparent",
-                            borderColor: "rgba(255,255,255,0.3)",
-                            color: "rgba(255,255,255,0.6)",
-                          }
-                    }
-                  >
-                    {option.label}
-                  </button>
-                ))}
+                <svg
+                  aria-hidden
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke={NARISS_GOLD}
+                  strokeWidth={1.4}
+                  className="h-5 w-5 opacity-80"
+                >
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M3 12h18M12 3c2.7 2.6 4.2 5.7 4.2 9s-1.5 6.4-4.2 9c-2.7-2.6-4.2-5.7-4.2-9s1.5-6.4 4.2-9Z" />
+                </svg>
+                <LangToggle lang={lang} setLang={setLang} className="flex-col" />
               </div>
 
-              <div className="order-1 relative h-[56vh] pt-28 pr-6 pl-6 md:order-2 md:h-full md:py-6">
+              <div className="relative h-dvh w-full pt-28 md:order-2 md:h-full md:w-auto md:py-6 md:pr-6 md:pl-6 md:pt-6">
                 <NarissPortrait src="/Nariss/Nariss des.png" className="relative h-full w-full" />
                 <DialogueBox
                   lines={NARISS_DIALOGUE}
                   speaker="Nariss"
                   speakerClassName={narissSpeakerFont.className}
-                  className="absolute bottom-2 left-1/2 z-20 -translate-x-1/2 sm:bottom-4 md:top-1/2 md:bottom-auto md:-translate-y-1/2"
+                  className="absolute bottom-6 left-1/2 z-20 -translate-x-1/2 sm:bottom-8 md:top-1/2 md:bottom-auto md:-translate-y-1/2"
                 />
+                <button
+                  type="button"
+                  onClick={() => setInfoOpen(true)}
+                  aria-label="Character info"
+                  className="absolute top-6 right-6 z-20 md:hidden"
+                >
+                  <Image
+                    src="/asset5.png"
+                    alt=""
+                    aria-hidden
+                    width={1063}
+                    height={2008}
+                    className="h-14 w-auto drop-shadow-[0_6px_14px_rgba(0,0,0,0.5)]"
+                  />
+                </button>
+                <Modal open={infoOpen} onClose={() => setInfoOpen(false)}>
+                  <div className="space-y-5 text-center">
+                    <h2 className={`${narissTitleFont.className} text-4xl text-white`}>
+                      {NARISS_INTRO_TITLE[lang]}
+                    </h2>
+                    <LangToggle lang={lang} setLang={setLang} className="mx-auto w-fit" />
+                    <NarissStatsList lang={lang} />
+                    <div className="text-left">
+                      <NarissLoreParagraphs lang={lang} />
+                    </div>
+                  </div>
+                </Modal>
               </div>
 
-              <div className="order-3 relative flex flex-col items-center justify-end gap-6 p-6 pb-12 text-center md:min-h-0 md:justify-center md:gap-8 md:pb-6">
+              <div className="hidden md:order-3 md:relative md:flex md:min-h-0 md:flex-col md:items-center md:justify-center md:gap-8 md:p-6 md:pb-6 md:text-center">
                 <div className="relative flex aspect-[1200/537] w-72 items-center justify-center sm:w-96 md:w-[28rem]">
                   <Image
                     src="/name-border.png"
@@ -244,69 +409,13 @@ export default function Home() {
                   <h2
                     className={`${narissTitleFont.className} relative text-4xl text-slate-900 sm:text-5xl md:text-6xl`}
                   >
-                    Introduction
+                    {NARISS_INTRO_TITLE[lang]}
                   </h2>
                 </div>
 
                 <div className="max-w-md space-y-5">
-
-                  <dl className="flex flex-row flex-wrap items-start justify-center gap-3">
-                    {NARISS_STATS.map((stat) => {
-                      const isHeight = stat.label === "Height";
-                      return (
-                        <div
-                          key={stat.label}
-                          tabIndex={isHeight ? 0 : undefined}
-                          className={`group flex flex-col items-center gap-0.5 border-2 bg-cover bg-center px-5 py-3 text-center text-xs sm:text-sm ${isHeight ? "cursor-help" : ""}`}
-                          style={{
-                            backgroundColor: NARISS_BADGE_CREAM,
-                            backgroundImage: "url('/paper-bg.jpg')",
-                            borderColor: NARISS_BADGE_BORDER,
-                            clipPath: TORN_PAPER_CLIP,
-                            filter: "drop-shadow(0 8px 10px rgba(0,0,0,0.35))",
-                          }}
-                        >
-                          <dt
-                            className="text-[10px] font-medium tracking-[0.2em] uppercase opacity-70"
-                            style={{ color: NARISS_BADGE_INK }}
-                          >
-                            {stat.label}
-                          </dt>
-                          {isHeight ? (
-                            <div className="relative">
-                              <dd
-                                className="font-medium whitespace-nowrap transition-opacity duration-300 group-hover:opacity-0 group-focus:opacity-0"
-                                style={{ color: NARISS_BADGE_INK }}
-                              >
-                                {stat.value}
-                              </dd>
-                              <dd
-                                className="absolute inset-0 font-medium whitespace-nowrap opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus:opacity-100"
-                                style={{ color: NARISS_BADGE_INK }}
-                              >
-                                {NARISS_MERMAID_HEIGHT}
-                              </dd>
-                            </div>
-                          ) : (
-                            <dd className="font-medium" style={{ color: NARISS_BADGE_INK }}>
-                              {stat.value}
-                            </dd>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </dl>
-
-                  <div lang={lang} className="space-y-3">
-                    {NARISS_LORE[lang].map((paragraph, i) => (
-                      <p
-                        key={i}
-                        className="text-sm leading-relaxed text-white/70 sm:text-base"
-                      >
-                        {paragraph}
-                      </p>
-                    ))}
-                  </div>
+                  <NarissStatsList lang={lang} />
+                  <NarissLoreParagraphs lang={lang} />
                 </div>
               </div>
             </div>

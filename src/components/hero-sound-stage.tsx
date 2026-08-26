@@ -1,13 +1,18 @@
 "use client";
 
 /**
- * Wraps the hero video with a click-to-toggle-sound control, replacing the
- * mouse cursor with a glowing wand-and-star cursor while hovering — blue and
- * silent, gold and singing once the video's music is unmuted.
+ * Wraps the hero video (visual only — the video's own audio track stays
+ * muted) with a click-to-toggle-sound control, replacing the mouse cursor
+ * with a glowing wand-and-star cursor while hovering — blue and silent,
+ * gold and singing once the site-wide background music (see
+ * music-context.tsx) is unmuted. Tapping here is just another entry point
+ * to that single shared music toggle, so the video's audio never plays
+ * alongside it.
  */
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { HeroWaveReveal } from "@/components/hero-wave-reveal";
+import { useMusic } from "@/components/music-context";
 import { NARISS_ACCENT_BLUE, NARISS_GOLD } from "@/lib/colors";
 
 export function HeroSoundStage({
@@ -28,8 +33,21 @@ export function HeroSoundStage({
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [muted, setMuted] = useState(true);
+  const { muted, toggleMuted } = useMusic();
   const [cursor, setCursor] = useState<{ x: number; y: number } | null>(null);
+
+  // The video starts loading as soon as the server-rendered <video autoPlay>
+  // tag is parsed, which on a fast/cached load can fire the native
+  // "loadeddata" event before React hydrates and attaches the onLoadedData
+  // listener below — dropping the event entirely and leaving onReady never
+  // called. Checking readyState on mount catches that race.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !onReady) return;
+    if (video.readyState >= 2) {
+      onReady();
+    }
+  }, [onReady]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -50,21 +68,10 @@ export function HeroSoundStage({
     };
   }, []);
 
-  const toggleSound = () => {
-    const video = videoRef.current;
-    if (!video) return;
-    const nextMuted = !muted;
-    video.muted = nextMuted;
-    if (!nextMuted) {
-      void video.play();
-    }
-    setMuted(nextMuted);
-  };
-
   return (
     <div
       ref={containerRef}
-      onClick={toggleSound}
+      onClick={toggleMuted}
       data-pop
       className="relative h-full w-full overflow-hidden [@media(pointer:fine)]:cursor-none"
     >
@@ -78,10 +85,7 @@ export function HeroSoundStage({
           muted
           loop
           playsInline
-          onLoadedData={() => {
-            console.log("DEBUG hero-sound-stage onLoadedData fired, onReady=", typeof onReady);
-            onReady?.();
-          }}
+          onLoadedData={() => onReady?.()}
         >
           {/* Narrow viewports get the smaller, lower-bitrate rendition —
               the browser picks the first matching <source> once, on load,

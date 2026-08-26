@@ -20,7 +20,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { NARISS_ACCENT_BLUE, NARISS_BADGE_BORDER, NARISS_BADGE_CREAM, NARISS_BADGE_INK } from "@/lib/colors";
+import { NARISS_BADGE_BORDER, NARISS_BADGE_CREAM, NARISS_BADGE_INK, NARISS_DEEP_BLUE } from "@/lib/colors";
 
 export function DialogueBox({
   lines,
@@ -45,7 +45,7 @@ export function DialogueBox({
         <div
           className="relative z-10 ml-5 inline-flex w-fit items-center gap-1.5 rounded-t-lg rounded-br-lg border-2 px-3 py-1 text-xs font-medium tracking-wide sm:text-sm"
           style={{
-            backgroundColor: NARISS_ACCENT_BLUE,
+            backgroundColor: NARISS_DEEP_BLUE,
             borderColor: NARISS_BADGE_BORDER,
             color: NARISS_BADGE_CREAM,
           }}
