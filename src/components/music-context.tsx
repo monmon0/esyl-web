@@ -47,7 +47,7 @@ export function MusicProvider({ children }: { children: ReactNode }) {
       if (cancelled) return;
       cancelFallbackRef.current = null;
       audio.muted = false;
-      void audio.play();
+      audio.play().catch(() => {});
       setMuted(false);
     };
 
@@ -64,7 +64,7 @@ export function MusicProvider({ children }: { children: ReactNode }) {
       .catch(() => {
         if (cancelled) return;
         audio.muted = true;
-        void audio.play();
+        audio.play().catch(() => {});
         // Bubble phase (not capture): the click's own target listeners —
         // including an explicit toggle's onClick — run first and get the
         // chance to cancel this before it ever fires.
@@ -89,7 +89,7 @@ export function MusicProvider({ children }: { children: ReactNode }) {
     const nextMuted = !muted;
     audio.muted = nextMuted;
     if (!nextMuted) {
-      void audio.play();
+      audio.play().catch(() => {});
     }
     setMuted(nextMuted);
   };
