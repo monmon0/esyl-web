@@ -49,7 +49,7 @@ function StackCard({
           />
         </div>
         <p
-          className="pb-1 text-center text-sm font-medium tracking-wide sm:text-base"
+          className="pb-1 text-center text-sm font-medium  sm:text-base"
           style={{ color: NARISS_BADGE_INK }}
         >
           {title}
@@ -97,7 +97,7 @@ export function NarissCardStack({
 
           <Link
         href="/gallery"
-        className="relative z-30 md:mt-[30vh] md:mb-[10vh] border-2 bg-cover bg-center px-8 py-3 text-sm font-medium tracking-wide whitespace-nowrap uppercase transition-transform hover:-translate-y-0.5 hover:scale-[1.03]"
+        className="relative z-30 md:mt-[30vh] md:mb-[10vh] border-2 bg-cover bg-center px-8 py-3 text-sm font-medium  whitespace-nowrap uppercase transition-transform hover:-translate-y-0.5 hover:scale-[1.03]"
         style={{
           backgroundColor: NARISS_BADGE_CREAM,
           backgroundImage: "url('/paper-bg.jpg')",

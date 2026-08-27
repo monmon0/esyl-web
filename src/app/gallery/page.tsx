@@ -1,20 +1,24 @@
 import Image from "next/image";
+import { Monsieur_La_Doulaise } from "next/font/google";
 import { GalleryTrinkets } from "@/components/gallery-trinkets";
 import { TapedPhoto } from "@/components/taped-photo";
 import { NARISS_BADGE_INK, NARISS_DEEP_BLUE, NARISS_PAPER } from "@/lib/colors";
 import { GALLERY_IMAGES } from "@/lib/gallery-images";
+
+const galleryTitleFont = Monsieur_La_Doulaise({
+  weight: "400",
+  subsets: ["latin"],
+});
 
 export default function GalleryPage() {
   return (
     <main className="relative isolate overflow-hidden" style={{ backgroundColor: NARISS_PAPER }}>
       <div
         aria-hidden
-        className="pointer-events-none fixed inset-0 -z-10"
+        className="pointer-events-none absolute inset-0 -z-10"
         style={{
           backgroundImage: "url('/bg texture.png')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
+          backgroundRepeat: "repeat",
         }}
       />
 
@@ -28,7 +32,7 @@ export default function GalleryPage() {
           A Fairy Tale in Stills
         </p> */}
         <h1
-          className="mt-4 font-serif text-4xl md:text-6xl"
+          className={`${galleryTitleFont.className} mt-4 text-6xl md:text-8xl`}
           style={{ color: NARISS_BADGE_INK }}
         >
           The Nariss Grimoire

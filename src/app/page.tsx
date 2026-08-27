@@ -186,7 +186,7 @@ function NarissStatsList({ lang }: { lang: "vi" | "en" }) {
             }}
           >
             <dt
-              className="text-[10px] font-medium tracking-[0.2em] uppercase opacity-70"
+              className="text-[10px] font-medium  uppercase opacity-70"
               style={{ color: NARISS_BADGE_INK }}
             >
               {stat.label}
@@ -268,6 +268,9 @@ export default function Home() {
     if (desktopHeroImageRef.current?.complete) {
       handleImageReady();
     }
+    // Intentionally mount-only — handleImageReady is idempotent, and
+    // re-running this on every render would defeat the point.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -318,7 +321,7 @@ export default function Home() {
                 />
                 <SocialLinks className="flex items-center gap-5" />
                 <p
-                  className="rounded-full border-2 px-5 py-1.5 text-sm tracking-wide shadow-sm sm:text-base"
+                  className="rounded-full border-2 px-5 py-1.5 text-sm  shadow-sm sm:text-base"
                   style={{
                     backgroundColor: NARISS_BADGE_CREAM,
                     borderColor: NARISS_BADGE_BORDER,
@@ -327,9 +330,15 @@ export default function Home() {
                 >
                   Character created by Esyl
                 </p>
+                <p
+                  className="hidden text-[10px]  md:block"
+                  style={{ color: NARISS_ACCENT_BLUE }}
+                >
+                  Music: @Anhthư Masa
+                </p>
               </div>
               <div
-                className={`absolute inset-x-0 bottom-4 z-10 flex flex-col items-center gap-0.5 px-4 text-center text-[10px] tracking-wide transition-opacity duration-700 md:hidden ${
+                className={`absolute inset-x-0 bottom-4 z-10 flex flex-col items-center gap-0.5 px-4 text-center text-[10px]  transition-opacity duration-700 md:hidden ${
                   heroReady ? "opacity-100" : "opacity-0"
                 }`}
                 style={{ color: NARISS_ACCENT_BLUE }}
@@ -382,24 +391,43 @@ export default function Home() {
                   speakerClassName={narissSpeakerFont.className}
                   className="absolute bottom-6 left-1/2 z-20 -translate-x-1/2 sm:bottom-8 md:top-1/2 md:bottom-auto md:-translate-y-1/2"
                 />
-                <button
-                  type="button"
-                  onClick={() => setInfoOpen(true)}
-                  aria-label="Character info"
-                  className="absolute top-6 right-6 z-20 md:hidden"
-                >
-                  <Image
-                    src="/asset5.png"
-                    alt=""
+                <div className="absolute top-6 right-6 z-20 md:hidden">
+                  <span
                     aria-hidden
-                    width={1063}
-                    height={2008}
-                    className="h-14 w-auto drop-shadow-[0_6px_14px_rgba(0,0,0,0.5)]"
+                    className="absolute top-1/2 left-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2 animate-pulse rounded-full blur-xl"
+                    style={{ backgroundColor: NARISS_GOLD, opacity: 0.55 }}
                   />
-                </button>
-                <Modal open={infoOpen} onClose={() => setInfoOpen(false)}>
+                  {/* <p
+                    aria-hidden
+                    className={`${narissHandwrittenFont.className} absolute top-full right-1 mt-0.5 whitespace-nowrap text-lg text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]`}
+                  >
+                    Click here!
+                  </p> */}
+                  <button
+                    type="button"
+                    onClick={() => setInfoOpen(true)}
+                    aria-label="Character info"
+                    className="relative"
+                  >
+                    <Image
+                      src="/asset5.png"
+                      alt=""
+                      aria-hidden
+                      width={1063}
+                      height={2008}
+                      className="h-14 w-auto drop-shadow-[0_6px_14px_rgba(0,0,0,0.5)]"
+                    />
+                  </button>
+                </div>
+                <Modal
+                  open={infoOpen}
+                  onClose={() => setInfoOpen(false)}
+                  backdropClassName="absolute inset-0 backdrop-blur-md bg-black/30 md:backdrop-blur-sm md:bg-black/60"
+                >
                   <div className="space-y-5 text-center">
-                    <h2 className={`${narissTitleFont.className} text-4xl text-white`}>
+                    <h2
+                      className={`${lang === "en" ? `${narissTitleFont.className} text-4xl` : "text-2xl"} text-white`}
+                    >
                       {NARISS_INTRO_TITLE[lang]}
                     </h2>
                     <LangToggle lang={lang} setLang={setLang} className="mx-auto w-fit" />
@@ -422,7 +450,11 @@ export default function Home() {
                     className="object-contain"
                   />
                   <h2
-                    className={`${narissTitleFont.className} relative text-4xl text-slate-900 sm:text-5xl md:text-6xl`}
+                    className={`relative text-slate-900 ${
+                      lang === "en"
+                        ? `${narissTitleFont.className} text-4xl sm:text-5xl md:text-6xl`
+                        : "text-2xl sm:text-3xl md:text-4xl"
+                    }`}
                   >
                     {NARISS_INTRO_TITLE[lang]}
                   </h2>
@@ -443,7 +475,7 @@ export default function Home() {
               aria-label="Scroll to gallery"
               className="absolute bottom-6 left-1/2 z-30 flex -translate-x-1/2 flex-col items-center gap-1 text-white/70 transition-colors hover:text-white"
             >
-              <span className="text-[10px] tracking-[0.3em] uppercase">Scroll</span>
+              <span className="text-[10px] uppercase">Scroll</span>
               <svg
                 width="18"
                 height="18"

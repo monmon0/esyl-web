@@ -35,9 +35,29 @@ export function HeroWaveTransition({
     const r = root.current;
     if (!r) return;
 
+    // Mobile GPUs pay more per SVG path point than desktop, and the
+    // crest's 5%-amplitude ripple is subtle enough that half the segments
+    // look identical — cuts the hot loop's trig/string-building cost.
+    const isCoarsePointer =
+      typeof window !== "undefined" &&
+      window.matchMedia("(pointer: coarse)").matches;
+    const segments = isCoarsePointer ? 20 : 40;
+
     const state = { level: 0, t: 0 };
+    // The path only reads as different from a flat rect while the crest
+    // has some amplitude — i.e. only while the wave is actually mid-reveal.
+    // Before scroll starts and after it's fully covered the frame (nearly
+    // all of this component's lifetime, including the entire moment it
+    // mounts), the shape doesn't change, so skip rebuilding/reapplying it.
+    let lastAmp = -1;
     const apply = () => {
-      pathRef.current?.setAttribute("d", wavePath(state.level, state.t));
+      const amp = Math.sin(Math.PI * Math.min(Math.max(state.level, 0), 1));
+      if (amp < 0.004 && lastAmp < 0.004) {
+        lastAmp = amp;
+        return;
+      }
+      lastAmp = amp;
+      pathRef.current?.setAttribute("d", wavePath(state.level, state.t, segments));
     };
     apply();
 
@@ -52,7 +72,11 @@ export function HeroWaveTransition({
       },
     });
 
-    // Keeps the crest alive (living sine wave) even while scroll is idle.
+    // Keeps the crest alive (living sine wave) even while scroll is idle —
+    // the RAF loop itself stays cheap (just a scheduling call) whenever
+    // apply() bails out above, so this doesn't cost anything while the wave
+    // isn't visibly rippling, but is still ready the instant it re-enters
+    // the visible range.
     let raf = 0;
     let last = performance.now();
     const tick = (now: number) => {
