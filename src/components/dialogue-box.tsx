@@ -43,7 +43,7 @@ export function DialogueBox({
     <div className={`w-64 max-w-full sm:w-80 md:w-96 ${className ?? ""}`}>
       {speaker && (
         <div
-          className="relative z-10 ml-5 inline-flex w-fit items-center gap-1.5 rounded-t-lg rounded-br-lg border-2 px-3 py-1 text-xs font-medium tracking-wide sm:text-sm"
+          className="relative z-10 ml-5 inline-flex w-fit items-center gap-1.5 rounded-t-lg rounded-br-lg border-2 px-3 py-1 text-xs font-medium  sm:text-sm"
           style={{
             backgroundColor: NARISS_DEEP_BLUE,
             borderColor: NARISS_BADGE_BORDER,
@@ -82,7 +82,7 @@ export function DialogueBox({
         </p>
         {lines.length > 1 && (
           <span
-            className="mt-1 block animate-bounce text-right text-[9px] tracking-wide uppercase opacity-60"
+            className="mt-1 block animate-bounce text-right text-[9px]  uppercase opacity-60"
             style={{ color: NARISS_BADGE_INK }}
             aria-hidden
           >

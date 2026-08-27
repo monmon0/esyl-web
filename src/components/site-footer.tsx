@@ -33,7 +33,7 @@ export function SiteFooter() {
 
       <div className="relative flex h-full w-full flex-col items-end justify-start px-8 py-8 text-right sm:px-12 sm:py-10">
         <div className="flex w-full items-start justify-between">
-          <ul className="space-y-2 text-left text-xs tracking-[0.25em] text-white/70 uppercase sm:text-sm">
+          <ul className="space-y-2 text-left text-xs text-white/70 uppercase sm:text-sm">
             {FOOTER_LINKS.map((link) =>
               link.href ? (
                 <li key={link.label}>
@@ -73,7 +73,7 @@ export function SiteFooter() {
           />
         </Link>
 
-        <p className="pt-6 text-[10px] tracking-[0.3em] text-white/40 uppercase sm:text-xs">
+        <p className="pt-6 text-[10px] text-white/40 uppercase sm:text-xs">
           © {new Date().getFullYear()} Esyl. All rights reserved.
         </p>
       </div>

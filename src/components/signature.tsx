@@ -3,8 +3,6 @@
 import { useEffect, useId, useState } from "react";
 import { motion } from "motion/react";
 import { parse as parseFont } from "opentype.js";
-import { playSound } from "@/lib/sound-engine";
-import { writeQuestBSound } from "@/lib/write-quest-b";
 
 type SignatureGlyph = {
   advanceWidth?: number;
@@ -192,7 +190,6 @@ export function Signature({
 
   useEffect(() => {
     let isCancelled = false;
-    const timers: number[] = [];
 
     async function loadSignaturePaths() {
       try {
@@ -213,11 +210,6 @@ export function Signature({
         setPaths(nextPaths);
         setWidth(nextWidth);
         setHeight(nextHeight);
-
-        const writeSoundTimer = window.setTimeout(() => {
-          void playSound(writeQuestBSound.dataUri, { volume: 0.5 });
-        }, delay * 1000);
-        timers.push(writeSoundTimer);
       } catch {
         if (isCancelled) {
           return;
@@ -232,9 +224,8 @@ export function Signature({
 
     return () => {
       isCancelled = true;
-      timers.forEach((timer) => window.clearTimeout(timer));
     };
-  }, [text, fontSize, horizontalPadding, delay]);
+  }, [text, fontSize, horizontalPadding]);
 
   return (
     <motion.svg

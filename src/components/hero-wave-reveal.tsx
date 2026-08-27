@@ -9,10 +9,10 @@ import gsap from "gsap";
  * in objectBoundingBox space (0-1) so this works at any element size.
  */
 
-export const wavePath = (level: number, t: number) => {
+export const wavePath = (level: number, t: number, segments = 40) => {
   const base = 1 - level;
   const amp = 0.05 * Math.sin(Math.PI * Math.min(Math.max(level, 0), 1));
-  const step = 1 / 40;
+  const step = 1 / segments;
   let d = "";
   for (let x = 0; x <= 1 + 1e-6; x += step) {
     const y =
@@ -39,13 +39,27 @@ export function HeroWaveReveal({
     const container = containerRef.current;
     if (!container) return;
 
-    // Animating a blur filter over the video for the full reveal is the
-    // single most expensive thing on this page on mobile GPUs — blurring a
-    // playing <video> forces continuous software compositing. Coarse-pointer
-    // devices get a plain scale-in instead; the wave mask still reveals.
+    // The sine-wave mask reveal is a desktop-only flourish. Coarse-pointer
+    // (mobile) devices skip it entirely — no mask, no scale-in — and get a
+    // plain blur-to-sharp fade on load instead, which is both cheaper (no
+    // continuous mask/compositing work) and what the wave was standing in
+    // for on small screens anyway.
     const isCoarsePointer =
       typeof window !== "undefined" &&
       window.matchMedia("(pointer: coarse)").matches;
+
+    if (isCoarsePointer) {
+      container.style.mask = "none";
+      container.style.webkitMask = "none";
+      const tween = gsap.fromTo(
+        container,
+        { opacity: 0, filter: "blur(16px)" },
+        { opacity: 1, filter: "blur(0px)", duration: 1.2, ease: "power2.out" },
+      );
+      return () => {
+        tween.kill();
+      };
+    }
 
     const state = { level: 0, t: 0 };
     const apply = () => {
@@ -57,10 +71,8 @@ export function HeroWaveReveal({
     tl.to(state, { t: 7, duration: 2, ease: "none" }, 0);
     tl.fromTo(
       container,
-      isCoarsePointer ? { scale: 1.15 } : { scale: 1.15, filter: "blur(12px)" },
-      isCoarsePointer
-        ? { scale: 1, duration: 2, ease: "power2.inOut" }
-        : { scale: 1, filter: "blur(0px)", duration: 2, ease: "power2.inOut" },
+      { scale: 1.15, filter: "blur(12px)" },
+      { scale: 1, filter: "blur(0px)", duration: 2, ease: "power2.inOut" },
       0,
     );
 

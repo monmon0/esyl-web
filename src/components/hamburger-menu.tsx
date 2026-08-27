@@ -9,9 +9,16 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import gsap from "gsap";
 import { useLoading } from "@/components/loading-context";
 import { NARISS_BLUE } from "@/lib/colors";
+
+// Always shown in the brand blue on these pages, regardless of scroll
+// position — unlike the home page, which only swaps to blue over its
+// light card-stack section. Settings keeps the white menu since it sits
+// over a busy photo background rather than the gallery's light paper.
+const FORCE_BLUE_PATHS = new Set(["/gallery"]);
 
 const RING_COUNT = 3;
 const RING_OFFSET = 14;
@@ -29,9 +36,11 @@ const MENU_ITEMS: { label: string; href?: string }[] = [
 
 export function HamburgerMenu() {
   const { loaded } = useLoading();
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [onCardStack, setOnCardStack] = useState(false);
   const ringRefs = useRef<(SVGEllipseElement | null)[]>([]);
+  const useBlueStroke = onCardStack || FORCE_BLUE_PATHS.has(pathname);
 
   // Card stack has a light paper background, so the white stroke goes
   // invisible there — swap to the brand blue while it's behind the toggle.
@@ -89,7 +98,7 @@ export function HamburgerMenu() {
                 cy={CENTER + offset}
                 rx={RING_RX}
                 ry={RING_RY}
-                stroke={onCardStack ? NARISS_BLUE : "#fff"}
+                stroke={useBlueStroke ? NARISS_BLUE : "#fff"}
                 strokeWidth="2"
                 fill="none"
                 style={{ transition: "stroke 0.4s ease" }}
@@ -121,7 +130,8 @@ export function HamburgerMenu() {
                 key={item.label}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className="font-serif text-lg tracking-[0.2em] text-white uppercase transition-opacity hover:opacity-70"
+                style={{ color: useBlueStroke ? NARISS_BLUE : "#fff" }}
+                className="font-serif text-lg uppercase transition-opacity hover:opacity-70"
               >
                 {item.label}
               </Link>
@@ -130,7 +140,8 @@ export function HamburgerMenu() {
                 key={item.label}
                 type="button"
                 onClick={() => setOpen(false)}
-                className="font-serif text-lg tracking-[0.2em] text-white uppercase transition-opacity hover:opacity-70"
+                style={{ color: useBlueStroke ? NARISS_BLUE : "#fff" }}
+                className="font-serif text-lg uppercase transition-opacity hover:opacity-70"
               >
                 {item.label}
               </button>

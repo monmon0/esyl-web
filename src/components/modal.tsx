@@ -7,7 +7,7 @@
  * ancestor (same reasoning as screen-ripple.tsx).
  */
 
-import { useEffect, useSyncExternalStore, type ReactNode } from "react";
+import { useEffect, useSyncExternalStore, type CSSProperties, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { NARISS_BLACK } from "@/lib/colors";
 
@@ -27,10 +27,17 @@ export function Modal({
   open,
   onClose,
   children,
+  panelClassName = "max-h-[85vh] w-full max-w-md overflow-y-auto rounded-2xl border p-6 shadow-2xl",
+  panelStyle,
+  backdropClassName = "absolute inset-0 backdrop-blur-sm bg-black/60",
 }: {
   open: boolean;
   onClose: () => void;
   children: ReactNode;
+  panelClassName?: string;
+  panelStyle?: CSSProperties;
+  /** Overrides the backdrop's blur/darkness. Defaults to a bg-black/60 blur-sm scrim. */
+  backdropClassName?: string;
 }) {
   const isClient = useIsClient();
 
@@ -47,17 +54,16 @@ export function Modal({
 
   return createPortal(
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
-      <div
-        aria-hidden
-        onClick={onClose}
-        className="absolute inset-0 backdrop-blur-sm"
-        style={{ backgroundColor: "rgba(0,0,0,0.6)" }}
-      />
+      <div aria-hidden onClick={onClose} className={backdropClassName} />
       <div
         role="dialog"
         aria-modal="true"
-        className="relative max-h-[85vh] w-full max-w-md overflow-y-auto rounded-2xl border p-6 shadow-2xl"
-        style={{ backgroundColor: `${NARISS_BLACK}`, borderColor: "rgba(255,255,255,0.15)" }}
+        className={`relative ${panelClassName}`}
+        style={{
+          backgroundColor: NARISS_BLACK,
+          borderColor: "rgba(255,255,255,0.15)",
+          ...panelStyle,
+        }}
       >
         <button
           type="button"

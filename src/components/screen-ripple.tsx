@@ -52,6 +52,10 @@ export function ScreenRippleLayer() {
 
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
+      // Mobile taps skip the ripple entirely — it read as an unwanted wave
+      // effect on touch devices, not just a desktop click affordance.
+      if (window.matchMedia("(pointer: coarse)").matches) return;
+
       const target = event.target as HTMLElement | null;
       if (!target?.closest("button, [data-pop]")) return;
 
