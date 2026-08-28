@@ -10,7 +10,6 @@ import { HeroWaveReveal } from "@/components/hero-wave-reveal";
 import { HeroWaveTransition } from "@/components/hero-wave-transition";
 import { MobileSectionPager } from "@/components/mobile-section-pager";
 import { DialogueBox } from "@/components/dialogue-box";
-import { useLoading } from "@/components/loading-context";
 import { NarissPortrait } from "@/components/nariss-portrait";
 import { Signature } from "@/components/signature";
 import { SocialLinks } from "@/components/social-links";
@@ -246,7 +245,6 @@ function NarissLoreParagraphs({
 }
 
 export default function Home() {
-  const { setLoaded } = useLoading();
   const [heroReady, setHeroReady] = useState(false);
   const [lang, setLang] = useState<"vi" | "en">("vi");
   const [infoOpen, setInfoOpen] = useState(false);
@@ -265,21 +263,13 @@ export default function Home() {
     return () => mql.removeEventListener("change", onChange);
   }, []);
 
-  // Gate the shared chrome (hamburger menu) on this page's hero, then
-  // release the gate on the way out so other pages aren't affected.
-  useEffect(() => {
-    setLoaded(false);
-    return () => setLoaded(true);
-  }, [setLoaded]);
-
   const markReady = () => {
     setHeroReady(true);
-    setLoaded(true);
   };
 
   // Only the media the current breakpoint actually renders should gate
   // readiness — the other one loads in the background regardless.
-  const handleVideoReady = () => {
+  const handleGifReady = () => {
     if (!window.matchMedia("(min-width: 1024px)").matches) markReady();
   };
   const handleImageReady = () => {
@@ -289,9 +279,8 @@ export default function Home() {
   // A cache-warm image (e.g. navigating here via <Link> after an earlier
   // visit) can finish loading — and fire its native "load" event — before
   // React has attached the onLoad handler below, permanently stranding
-  // `loaded` at false and hiding the hamburger menu. `complete` catches
-  // that race on mount, the same way the mobile hero video's readyState
-  // check does in hero-sound-stage.tsx.
+  // `heroReady` at false. `complete` catches that race on mount, the same
+  // way the mobile hero gif's `complete` check does in hero-sound-stage.tsx.
   useEffect(() => {
     if (desktopHeroImageRef.current?.complete) {
       handleImageReady();
@@ -307,14 +296,10 @@ export default function Home() {
       style={{ backgroundImage: "url('/cover.png')" }}
     >
       <div className="relative h-full w-full overflow-hidden">
-        {/* Mobile keeps the vertical hero video; desktop gets the
+        {/* Mobile keeps the vertical hero gif; desktop gets the
                   horizontally-framed still instead. */}
         <div className="absolute inset-0 h-full w-full lg:hidden">
-          <HeroSoundStage
-            src="/Nariss/final-optimized.mp4"
-            mobileSrc="/Nariss/final-mobile.mp4"
-            onReady={handleVideoReady}
-          />
+          <HeroSoundStage src="/final-mobile.gif" onReady={handleGifReady} />
         </div>
         <HeroWaveReveal className="absolute inset-0 z-0 hidden h-full w-full lg:block">
           <Image
@@ -353,10 +338,7 @@ export default function Home() {
           >
             Character created by Esyil
           </p>
-          <p
-            className="hidden text-[10px]  lg:block"
-            style={{ color: NARISS_ACCENT_BLUE }}
-          >
+          <p className="hidden text-[10px] text-white lg:block">
             Music: @Anhthư Masa
           </p>
         </div>

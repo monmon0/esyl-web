@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { HamburgerMenu } from "@/components/hamburger-menu";
-import { LoadingProvider } from "@/components/loading-context";
 import { MusicController } from "@/components/music-controller";
 import { MusicProvider } from "@/components/music-context";
 import { NotificationPopListener } from "@/components/notification-pop-listener";
@@ -50,14 +49,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <LoadingProvider>
-          <MusicProvider>
-            <div className="relative z-10 flex flex-1 flex-col">{children}</div>
-            <SiteFooter />
-            <HamburgerMenu />
-            <MusicController />
-          </MusicProvider>
-        </LoadingProvider>
+        <MusicProvider>
+          <div className="relative z-10 flex flex-1 flex-col">{children}</div>
+          <SiteFooter />
+          <HamburgerMenu />
+          <MusicController />
+        </MusicProvider>
         <NotificationPopListener />
         <ScreenRippleLayer />
       </body>

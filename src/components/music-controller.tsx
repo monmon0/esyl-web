@@ -2,16 +2,13 @@
 
 /**
  * Fixed bottom-left button that mutes/unmutes the site-wide background
- * music (see music-context.tsx). Mirrors the hamburger menu's fade-in gate
- * on `loaded` so it doesn't pop in ahead of the hero.
+ * music (see music-context.tsx).
  */
 
-import { useLoading } from "@/components/loading-context";
 import { useMusic } from "@/components/music-context";
 import { NARISS_BADGE_BORDER, NARISS_BADGE_CREAM, NARISS_BADGE_INK } from "@/lib/colors";
 
 export function MusicController() {
-  const { loaded } = useLoading();
   const { muted, toggleMuted } = useMusic();
 
   return (
@@ -20,11 +17,7 @@ export function MusicController() {
       onClick={toggleMuted}
       aria-label={muted ? "Play background music" : "Mute background music"}
       aria-pressed={!muted}
-      tabIndex={loaded ? 0 : -1}
-      aria-hidden={!loaded}
-      className={`fixed bottom-6 left-6 z-50 flex h-11 w-11 items-center justify-center rounded-full border-2 shadow-lg transition-all duration-500 ${
-        loaded ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
-      }`}
+      className="fixed bottom-6 left-6 z-50 flex h-11 w-11 items-center justify-center rounded-full border-2 shadow-lg"
       style={{
         backgroundColor: NARISS_BADGE_CREAM,
         borderColor: NARISS_BADGE_BORDER,
