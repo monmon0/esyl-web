@@ -35,7 +35,7 @@ export function HeroSoundStage({
   mobileSrc?: string;
   /** First-frame still shown instantly while the video buffers. */
   poster?: string;
-  /** Fires once the video has enough data to play through. */
+  /** Fires once the video has actually started playing. */
   onReady?: () => void;
   children?: ReactNode;
 }) {
@@ -46,13 +46,13 @@ export function HeroSoundStage({
 
   // The video starts loading as soon as the server-rendered <video autoPlay>
   // tag is parsed, which on a fast/cached load can fire the native
-  // "loadeddata" event before React hydrates and attaches the onLoadedData
+  // "playing" event before React hydrates and attaches the onPlaying
   // listener below — dropping the event entirely and leaving onReady never
-  // called. Checking readyState on mount catches that race.
+  // called. Checking play state on mount catches that race.
   useEffect(() => {
     const video = videoRef.current;
     if (!video || !onReady) return;
-    if (video.readyState >= 2) {
+    if (!video.paused && !video.ended && video.readyState > 2) {
       onReady();
     }
   }, [onReady]);
@@ -63,11 +63,22 @@ export function HeroSoundStage({
   // autoplay then gets silently blocked and the browser falls back to
   // showing its native tap-to-play button. Setting the property directly
   // and kicking off playback ourselves avoids that fallback entirely.
+  //
+  // A single attempt on mount can also lose the race on a slow mobile
+  // connection — .play() called before the browser has buffered enough
+  // gets silently rejected rather than queued, so it's retried on canplay
+  // (enough data to start) too, in case the connection was too slow for
+  // the first attempt to succeed.
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
     video.muted = true;
-    void video.play().catch(() => {});
+
+    const tryPlay = () => void video.play().catch(() => {});
+    tryPlay();
+
+    video.addEventListener("canplay", tryPlay);
+    return () => video.removeEventListener("canplay", tryPlay);
   }, []);
 
   useEffect(() => {
@@ -109,9 +120,14 @@ export function HeroSoundStage({
           disablePictureInPicture
           controlsList="nodownload nofullscreen noremoteplayback"
           src={mobileSrc ?? src}
-          onLoadedData={() => onReady?.()}
+          onPlaying={() => onReady?.()}
         />
       </HeroWaveReveal>
+      {/* Hints the browser to start fetching this before it would otherwise
+          get around to discovering the <video> element's src, so playback
+          can start sooner on a slow mobile connection. */}
+      <link rel="preload" as="video" href={mobileSrc ?? src} />
+
       {children}
       {cursor && (
         <div
