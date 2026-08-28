@@ -56,6 +56,30 @@ export function MobileSectionPager({
     return () => observer.disconnect();
   }, [nextSectionId]);
 
+  // `overflow-hidden` on the root only clips its contents visually — it
+  // doesn't stop the page itself from scrolling, so a swipe would move the
+  // whole document past this block instead of respecting the transform
+  // slide. Block wheel/touch scrolling that originates inside this block
+  // while still on the paged slides, forcing the arrow buttons; scoped to
+  // this subtree (via rootRef) rather than the whole window so it doesn't
+  // also block scrolling inside the portaled info modal.
+  useEffect(() => {
+    if (pastSlides) return;
+    const root = rootRef.current;
+    if (!root) return;
+    const prevent = (event: Event) => {
+      if (root.contains(event.target as Node)) {
+        event.preventDefault();
+      }
+    };
+    window.addEventListener("wheel", prevent, { passive: false });
+    window.addEventListener("touchmove", prevent, { passive: false });
+    return () => {
+      window.removeEventListener("wheel", prevent);
+      window.removeEventListener("touchmove", prevent);
+    };
+  }, [pastSlides]);
+
   const goForward = () => {
     if (pastSlides) return;
     if (index === SLIDE_COUNT - 1) {
