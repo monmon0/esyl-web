@@ -8,6 +8,7 @@ import { HeroAtmosphere } from "@/components/hero-atmosphere";
 import { HeroSoundStage } from "@/components/hero-sound-stage";
 import { HeroWaveReveal } from "@/components/hero-wave-reveal";
 import { HeroWaveTransition } from "@/components/hero-wave-transition";
+import { MobileSectionPager } from "@/components/mobile-section-pager";
 import { DialogueBox } from "@/components/dialogue-box";
 import { useLoading } from "@/components/loading-context";
 import { NarissPortrait } from "@/components/nariss-portrait";
@@ -184,7 +185,7 @@ function NarissStatsList({ lang }: { lang: "vi" | "en" }) {
               backgroundImage: "url('/paper-bg.jpg')",
               borderColor: NARISS_BADGE_BORDER,
               clipPath: TORN_PAPER_CLIP,
-              filter: "drop-shadow(0 8px 10px rgba(0,0,0,0.35))",
+              // filter: "drop-shadow(0 8px 10px rgba(0,0,0,0.35))",
             }}
           >
             <dt
@@ -247,7 +248,7 @@ function NarissLoreParagraphs({
 export default function Home() {
   const { setLoaded } = useLoading();
   const [heroReady, setHeroReady] = useState(false);
-  const [lang, setLang] = useState<"vi" | "en">("en");
+  const [lang, setLang] = useState<"vi" | "en">("vi");
   const [infoOpen, setInfoOpen] = useState(false);
   const desktopHeroImageRef = useRef<HTMLImageElement>(null);
   // Mobile gets three plain, normally-stacked sections — no pin, no wave
@@ -344,7 +345,7 @@ export default function Home() {
           />
           <SocialLinks className="flex items-center gap-5" />
           <p
-            className="rounded-full border-2 px-5 py-1.5 text-sm  shadow-sm sm:text-base"
+            className="rounded-full border-2 px-5 py-1.5 text-sm  sm:text-base"
             style={{
               backgroundColor: NARISS_BADGE_CREAM,
               borderColor: NARISS_BADGE_BORDER,
@@ -434,7 +435,7 @@ export default function Home() {
               type="button"
               onClick={() => setInfoOpen(true)}
               aria-label="Character info"
-              className="relative flex h-14 w-14 items-center justify-center bg-cover bg-center shadow-lg"
+              className="relative flex h-14 w-14 items-center justify-center bg-cover bg-center"
               style={{ backgroundImage: "url('/paper-profile-bg 1.png')" }}
             >
               <Image
@@ -443,7 +444,6 @@ export default function Home() {
                 aria-hidden
                 width={1063}
                 height={2008}
-                className="h-10 w-auto drop-shadow-[0_6px_14px_rgba(0,0,0,0.5)]"
               />
             </button>
           </div>
@@ -451,7 +451,7 @@ export default function Home() {
             open={infoOpen}
             onClose={() => setInfoOpen(false)}
             backdropClassName="absolute inset-0 "
-            panelClassName="max-h-[92vh] min-h-[70vh] w-full max-w-md overflow-y-auto rounded-2xl p-6 shadow-2xl"
+            panelClassName="max-h-[92vh] min-h-[70vh] w-full max-w-md overflow-y-auto rounded-2xl p-6 "
             panelStyle={{
               backgroundColor: "transparent",
               backgroundImage: "url('/paper-profile-bg 1.png')",
@@ -459,24 +459,25 @@ export default function Home() {
               backgroundPosition: "center",
               backgroundRepeat: "no-repeat",
             }}
-            closeButtonClassName="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full text-black/60 transition-colors hover:bg-black/10 hover:text-black"
-          >
-            <div className="space-y-5 text-center">
-              <h2
-                className={`${
-                  lang === "en"
-                    ? `${narissTitleFont.className} text-4xl`
-                    : "text-2xl"
-                }`}
-                style={{ color: NARISS_BADGE_INK }}
-              >
-                {NARISS_INTRO_TITLE[lang]}
-              </h2>
+            closeButtonClassName="absolute top-10 right-3 flex h-8 w-8 items-center justify-center rounded-full text-white/60 transition-colors hover:bg-black/10 hover:text-black"
+            aboveContent={
               <LangToggle
                 lang={lang}
                 setLang={setLang}
                 className="mx-auto w-fit"
               />
+            }
+          >
+            <div className="space-y-5 text-center">
+              <h2
+                className={`text-white  ${
+                  lang === "en"
+                    ? `${narissTitleFont.className} text-4xl`
+                    : "text-2xl"
+                }`}
+              >
+                {NARISS_INTRO_TITLE[lang]}
+              </h2>
               <NarissStatsList lang={lang} />
               <div className="text-left">
                 <NarissLoreParagraphs lang={lang} tone="dark" />
@@ -521,7 +522,7 @@ export default function Home() {
             ?.scrollIntoView({ behavior: "smooth" })
         }
         aria-label="Scroll to gallery"
-        className="absolute bottom-6 left-1/2 z-30 flex -translate-x-1/2 flex-col items-center gap-1 text-white/70 transition-colors hover:text-white"
+        className="absolute bottom-6 left-1/2 z-30 hidden -translate-x-1/2 flex-col items-center gap-1 text-white/70 transition-colors hover:text-white lg:flex"
       >
         <span className="text-[10px] uppercase">Scroll</span>
         <svg
@@ -553,7 +554,7 @@ export default function Home() {
           className="object-contain"
         />
       </div>
-      <div className="pointer-events-none absolute top-[-7] left-0 z-20 h-24 w-24 rotate-90 lg:h-50 lg:w-50">
+      {/* <div className="pointer-events-none absolute top-[-7] left-0 z-20 h-24 w-24 rotate-90 lg:h-50 lg:w-50">
         <Image
           src="/border.png"
           alt=""
@@ -561,7 +562,7 @@ export default function Home() {
           sizes="144px"
           className="object-contain"
         />
-      </div>
+      </div> */}
       <div className="pointer-events-none absolute top-0 right-[-7] z-20 h-24 w-24 rotate-180 lg:h-50 lg:w-50">
         <Image
           src="/border.png"
@@ -585,16 +586,17 @@ export default function Home() {
 
   return (
     <>
-      <ScrollResistance boundaryId="profile" />
       {isDesktopLayout ? (
-        <HeroWaveTransition hero={heroSection} next={profileSection} />
-      ) : (
         <>
-          <div className="relative h-dvh w-full">{heroSection}</div>
-          <div id="profile" className="relative h-dvh w-full">
-            {profileSection}
-          </div>
+          <ScrollResistance boundaryId="profile" />
+          <HeroWaveTransition hero={heroSection} next={profileSection} />
         </>
+      ) : (
+        <MobileSectionPager
+          hero={heroSection}
+          profile={profileSection}
+          nextSectionId="card-stack"
+        />
       )}
 
       {/* Portrait wall — every curated Nariss look, stacking and scaling
