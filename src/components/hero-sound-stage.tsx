@@ -49,6 +49,19 @@ export function HeroSoundStage({
     }
   }, [onReady]);
 
+  // JSX's `muted` prop sets the attribute, but some mobile browsers check
+  // the live DOM property when deciding whether to honor autoplay, and
+  // React attaching that attribute after hydration can lose the race —
+  // autoplay then gets silently blocked and the browser falls back to
+  // showing its native tap-to-play button. Setting the property directly
+  // and kicking off playback ourselves avoids that fallback entirely.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = true;
+    void video.play().catch(() => {});
+  }, []);
+
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -85,6 +98,8 @@ export function HeroSoundStage({
           muted
           loop
           playsInline
+          disablePictureInPicture
+          controlsList="nodownload nofullscreen noremoteplayback"
           onLoadedData={() => onReady?.()}
         >
           {/* Narrow viewports get the smaller, lower-bitrate rendition —

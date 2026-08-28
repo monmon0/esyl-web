@@ -30,6 +30,7 @@ export function Modal({
   panelClassName = "max-h-[85vh] w-full max-w-md overflow-y-auto rounded-2xl border p-6 shadow-2xl",
   panelStyle,
   backdropClassName = "absolute inset-0 backdrop-blur-sm bg-black/60",
+  closeButtonClassName = "absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full text-white/60 transition-colors hover:bg-white/10 hover:text-white",
 }: {
   open: boolean;
   onClose: () => void;
@@ -38,6 +39,8 @@ export function Modal({
   panelStyle?: CSSProperties;
   /** Overrides the backdrop's blur/darkness. Defaults to a bg-black/60 blur-sm scrim. */
   backdropClassName?: string;
+  /** Overrides the × button's colors — the default assumes a dark panel. */
+  closeButtonClassName?: string;
 }) {
   const isClient = useIsClient();
 
@@ -69,7 +72,7 @@ export function Modal({
           type="button"
           onClick={onClose}
           aria-label="Close"
-          className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full text-white/60 transition-colors hover:bg-white/10 hover:text-white"
+          className={closeButtonClassName}
         >
           ✕
         </button>

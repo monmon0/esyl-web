@@ -133,9 +133,7 @@ function LangToggle({
     <div
       role="group"
       aria-label="Lore language"
-      className={`flex items-center gap-1 border-2 px-2 py-1.5 ${
-        className ?? ""
-      }`}
+      className={`flex items-center gap-1 px-2 py-1.5 ${className ?? ""}`}
       style={{
         backgroundColor: NARISS_BADGE_CREAM,
         backgroundImage: "url('/paper-bg.jpg')",
@@ -222,13 +220,22 @@ function NarissStatsList({ lang }: { lang: "vi" | "en" }) {
   );
 }
 
-function NarissLoreParagraphs({ lang }: { lang: "vi" | "en" }) {
+function NarissLoreParagraphs({
+  lang,
+  tone = "light",
+}: {
+  lang: "vi" | "en";
+  /** "light" text for a dark backdrop (default), "dark" ink for a light/paper one. */
+  tone?: "light" | "dark";
+}) {
   return (
     <div lang={lang} className="space-y-3">
       {NARISS_LORE[lang].map((paragraph, i) => (
         <p
           key={i}
-          className="text-sm leading-relaxed text-white/70 sm:text-base"
+          className={`text-sm leading-relaxed sm:text-base ${
+            tone === "dark" ? "text-black/70" : "text-white/70"
+          }`}
         >
           {paragraph}
         </p>
@@ -427,7 +434,8 @@ export default function Home() {
               type="button"
               onClick={() => setInfoOpen(true)}
               aria-label="Character info"
-              className="relative"
+              className="relative flex h-14 w-14 items-center justify-center bg-cover bg-center shadow-lg"
+              style={{ backgroundImage: "url('/paper-profile-bg 1.png')" }}
             >
               <Image
                 src="/asset5.png"
@@ -435,14 +443,23 @@ export default function Home() {
                 aria-hidden
                 width={1063}
                 height={2008}
-                className="h-14 w-auto drop-shadow-[0_6px_14px_rgba(0,0,0,0.5)]"
+                className="h-10 w-auto drop-shadow-[0_6px_14px_rgba(0,0,0,0.5)]"
               />
             </button>
           </div>
           <Modal
             open={infoOpen}
             onClose={() => setInfoOpen(false)}
-            backdropClassName="absolute inset-0 backdrop-blur-md bg-black/30 lg:backdrop-blur-sm lg:bg-black/60"
+            backdropClassName="absolute inset-0 "
+            panelClassName="max-h-[92vh] min-h-[70vh] w-full max-w-md overflow-y-auto rounded-2xl p-6 shadow-2xl"
+            panelStyle={{
+              backgroundColor: "transparent",
+              backgroundImage: "url('/paper-profile-bg 1.png')",
+              backgroundSize: "contain",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+            }}
+            closeButtonClassName="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full text-black/60 transition-colors hover:bg-black/10 hover:text-black"
           >
             <div className="space-y-5 text-center">
               <h2
@@ -450,7 +467,8 @@ export default function Home() {
                   lang === "en"
                     ? `${narissTitleFont.className} text-4xl`
                     : "text-2xl"
-                } text-white`}
+                }`}
+                style={{ color: NARISS_BADGE_INK }}
               >
                 {NARISS_INTRO_TITLE[lang]}
               </h2>
@@ -461,7 +479,7 @@ export default function Home() {
               />
               <NarissStatsList lang={lang} />
               <div className="text-left">
-                <NarissLoreParagraphs lang={lang} />
+                <NarissLoreParagraphs lang={lang} tone="dark" />
               </div>
             </div>
           </Modal>

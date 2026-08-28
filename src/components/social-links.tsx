@@ -21,7 +21,7 @@ function FacebookIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-function TwitterIcon(props: SVGProps<SVGSVGElement>) {
+function CaraIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -32,12 +32,13 @@ function TwitterIcon(props: SVGProps<SVGSVGElement>) {
       strokeLinejoin="round"
       {...props}
     >
-      <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z" />
+      <circle cx="12" cy="12" r="10" />
+      <path d="M15.5 9a4.5 4.5 0 1 0 0 6" />
     </svg>
   );
 }
 
-function InstagramIcon(props: SVGProps<SVGSVGElement>) {
+function BlueskyIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -48,9 +49,7 @@ function InstagramIcon(props: SVGProps<SVGSVGElement>) {
       strokeLinejoin="round"
       {...props}
     >
-      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+      <path d="M12 9c-1.2-2.5-3.6-4.5-6-4.5-1 0-1.5.6-1.5 1.6 0 2.4 1.6 6.1 4 7.7-1 .1-2 .5-2 1.4 0 1.2 1.4 1.8 2.5 1.8 1.6 0 2.7-.8 3-2 .3 1.2 1.4 2 3 2 1.1 0 2.5-.6 2.5-1.8 0-.9-1-1.3-2-1.4 2.4-1.6 4-5.3 4-7.7 0-1-.5-1.6-1.5-1.6-2.4 0-4.8 2-6 4.5z" />
     </svg>
   );
 }
@@ -61,8 +60,12 @@ const LINKS = [
     href: "https://www.facebook.com/esyil207#",
     Icon: FacebookIcon,
   },
-  { label: "Twitter", href: "", Icon: TwitterIcon },
-  { label: "Instagram", href: "#", Icon: InstagramIcon },
+  { label: "Cara", href: "https://cara.app/esyil", Icon: CaraIcon },
+  {
+    label: "Bluesky",
+    href: "https://bsky.app/profile/esyil207.bsky.social",
+    Icon: BlueskyIcon,
+  },
 ];
 
 export function SocialLinks({ className }: { className?: string }) {
