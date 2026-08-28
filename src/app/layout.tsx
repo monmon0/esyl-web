@@ -20,18 +20,18 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Nariss's Profile | Original Character by Esyl",
+  title: "Nariss's Profile | Original Character by Esyil",
   description:
-    "Nariss is a character created by Esyl. Explore her profile, design, and story.",
+    "Nariss is a character created by Esyil. Explore her profile, design, and story.",
   openGraph: {
-    title: "Nariss's Profile | Original Character by Esyl",
+    title: "Nariss's Profile | Original Character by Esyil",
     description:
-      "Nariss is a character created by Esyl. Explore her profile, design, and story.",
-    url: "https://esyl.vercel.app/",
-    siteName: "Esyl's Portfolio",
+      "Nariss is a character created by Esyil. Explore her profile, design, and story.",
+    url: "https://nariss.vercel.app/",
+    siteName: "Esyil's Portfolio",
     images: [
       {
-        url: "https://esyl.vercel.app/Nariss/og-image.png",
+        url: "https://nariss.vercel.app/Nariss/og-image.png",
         width: 1200,
         height: 630,
         alt: "Nariss's Profile",

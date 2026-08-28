@@ -56,8 +56,12 @@ function InstagramIcon(props: SVGProps<SVGSVGElement>) {
 }
 
 const LINKS = [
-  { label: "Facebook", href: "#", Icon: FacebookIcon },
-  { label: "Twitter", href: "#", Icon: TwitterIcon },
+  {
+    label: "Facebook",
+    href: "https://www.facebook.com/esyil207#",
+    Icon: FacebookIcon,
+  },
+  { label: "Twitter", href: "", Icon: TwitterIcon },
   { label: "Instagram", href: "#", Icon: InstagramIcon },
 ];
 

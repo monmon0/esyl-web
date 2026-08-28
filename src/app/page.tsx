@@ -40,7 +40,7 @@ const NARISS_STATS: Record<
       label: "Height",
       value: (
         <>
-           <span className="opacity-60">HUMAN</span> 1m72
+          <span className="opacity-60">HUMAN</span> 1m72
         </>
       ),
     },
@@ -53,7 +53,7 @@ const NARISS_STATS: Record<
       label: "Chiều cao",
       value: (
         <>
-           <span className="opacity-60">NGƯỜI</span> 1m72
+          <span className="opacity-60">NGƯỜI</span> 1m72
         </>
       ),
     },
@@ -66,12 +66,12 @@ const NARISS_STATS: Record<
 const NARISS_MERMAID_HEIGHT: Record<"vi" | "en", ReactNode> = {
   en: (
     <>
-       <span className="opacity-60">MERMAID</span> 2m6
+      <span className="opacity-60">MERMAID</span> 2m6
     </>
   ),
   vi: (
     <>
-       <span className="opacity-60">TIÊN CÁ</span> 2m6
+      <span className="opacity-60">TIÊN CÁ</span> 2m6
     </>
   ),
 };
@@ -95,7 +95,7 @@ const NARISS_LORE: Record<"vi" | "en", string[]> = {
 };
 
 const NARISS_DIALOGUE = [
-  "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "Who is crying?",
   "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
   "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
 ];
@@ -133,7 +133,9 @@ function LangToggle({
     <div
       role="group"
       aria-label="Lore language"
-      className={`flex items-center gap-1 border-2 px-2 py-1.5 ${className ?? ""}`}
+      className={`flex items-center gap-1 border-2 px-2 py-1.5 ${
+        className ?? ""
+      }`}
       style={{
         backgroundColor: NARISS_BADGE_CREAM,
         backgroundImage: "url('/paper-bg.jpg')",
@@ -176,7 +178,9 @@ function NarissStatsList({ lang }: { lang: "vi" | "en" }) {
           <div
             key={stat.key}
             tabIndex={isHeight ? 0 : undefined}
-            className={`group flex flex-col items-center gap-0.5 border-2 bg-cover bg-center px-5 py-3 text-center text-xs sm:text-sm ${isHeight ? "cursor-help" : ""}`}
+            className={`group flex flex-col items-center gap-0.5 border-2 bg-cover bg-center px-5 py-3 text-center text-xs sm:text-sm ${
+              isHeight ? "cursor-help" : ""
+            }`}
             style={{
               backgroundColor: NARISS_BADGE_CREAM,
               backgroundImage: "url('/paper-bg.jpg')",
@@ -222,7 +226,10 @@ function NarissLoreParagraphs({ lang }: { lang: "vi" | "en" }) {
   return (
     <div lang={lang} className="space-y-3">
       {NARISS_LORE[lang].map((paragraph, i) => (
-        <p key={i} className="text-sm leading-relaxed text-white/70 sm:text-base">
+        <p
+          key={i}
+          className="text-sm leading-relaxed text-white/70 sm:text-base"
+        >
           {paragraph}
         </p>
       ))}
@@ -252,10 +259,10 @@ export default function Home() {
   // Only the media the current breakpoint actually renders should gate
   // readiness — the other one loads in the background regardless.
   const handleVideoReady = () => {
-    if (!window.matchMedia("(min-width: 768px)").matches) markReady();
+    if (!window.matchMedia("(min-width: 1024px)").matches) markReady();
   };
   const handleImageReady = () => {
-    if (window.matchMedia("(min-width: 768px)").matches) markReady();
+    if (window.matchMedia("(min-width: 1024px)").matches) markReady();
   };
 
   // A cache-warm image (e.g. navigating here via <Link> after an earlier
@@ -285,7 +292,7 @@ export default function Home() {
             <div className="relative h-full w-full overflow-hidden">
               {/* Mobile keeps the vertical hero video; desktop gets the
                   horizontally-framed still instead. */}
-              <div className="absolute inset-0 h-full w-full md:hidden">
+              <div className="absolute inset-0 h-full w-full lg:hidden">
                 <HeroSoundStage
                   src="/Nariss/final-optimized.mp4"
                   mobileSrc="/Nariss/final-mobile.mp4"
@@ -293,7 +300,7 @@ export default function Home() {
                   onReady={handleVideoReady}
                 />
               </div>
-              <HeroWaveReveal className="absolute inset-0 z-0 hidden h-full w-full md:block">
+              <HeroWaveReveal className="absolute inset-0 z-0 hidden h-full w-full lg:block">
                 <Image
                   ref={desktopHeroImageRef}
                   src="/Nariss/desktop-horizontal.png"
@@ -307,7 +314,7 @@ export default function Home() {
               </HeroWaveReveal>
               <HeroAtmosphere className="-z-10" />
               <div
-                className={`absolute top-1/2 left-1/2 z-10 flex w-[90vw] max-w-[90vw] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-1 transition-opacity duration-700 md:w-auto md:max-w-[70vw] ${
+                className={`absolute top-1/2 left-1/2 z-10 flex w-[90vw] max-w-[90vw] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-1 transition-opacity duration-700 lg:w-auto lg:max-w-[70vw] ${
                   heroReady ? "opacity-100" : "opacity-0"
                 }`}
               >
@@ -328,17 +335,17 @@ export default function Home() {
                     color: NARISS_BADGE_INK,
                   }}
                 >
-                  Character created by Esyl
+                  Character created by Esyil
                 </p>
                 <p
-                  className="hidden text-[10px]  md:block"
+                  className="hidden text-[10px]  lg:block"
                   style={{ color: NARISS_ACCENT_BLUE }}
                 >
                   Music: @Anhthư Masa
                 </p>
               </div>
               <div
-                className={`absolute inset-x-0 bottom-4 z-10 flex flex-col items-center gap-0.5 px-4 text-center text-[10px]  transition-opacity duration-700 md:hidden ${
+                className={`absolute inset-x-0 bottom-4 z-10 flex flex-col items-center gap-0.5 px-4 text-center text-[10px]  transition-opacity duration-700 lg:hidden ${
                   heroReady ? "opacity-100" : "opacity-0"
                 }`}
                 style={{ color: NARISS_ACCENT_BLUE }}
@@ -363,11 +370,11 @@ export default function Home() {
               className="pointer-events-none object-cover opacity-45"
             />
 
-            <div className="relative z-10 flex h-full w-full flex-col overflow-y-auto md:grid md:grid-cols-[5rem_1.3fr_1fr] md:overflow-visible">
+            <div className="relative z-10 flex h-full w-full flex-col overflow-y-auto lg:grid lg:grid-cols-[5rem_1.3fr_1fr] lg:overflow-visible">
               <div
                 role="group"
                 aria-label="Lore language"
-                className="hidden md:order-1 md:flex md:h-full md:flex-col md:items-center md:justify-center md:gap-3"
+                className="hidden lg:order-1 lg:flex lg:h-full lg:flex-col lg:items-center lg:justify-center lg:gap-3"
               >
                 <svg
                   aria-hidden
@@ -380,18 +387,25 @@ export default function Home() {
                   <circle cx="12" cy="12" r="9" />
                   <path d="M3 12h18M12 3c2.7 2.6 4.2 5.7 4.2 9s-1.5 6.4-4.2 9c-2.7-2.6-4.2-5.7-4.2-9s1.5-6.4 4.2-9Z" />
                 </svg>
-                <LangToggle lang={lang} setLang={setLang} className="flex-col" />
+                <LangToggle
+                  lang={lang}
+                  setLang={setLang}
+                  className="flex-col"
+                />
               </div>
 
-              <div className="relative h-dvh w-full pt-28 md:order-2 md:h-full md:w-auto md:py-6 md:pr-6 md:pl-6 md:pt-6">
-                <NarissPortrait src="/Nariss/Nariss des.png" className="relative h-full w-full" />
+              <div className="relative h-dvh w-full pt-28 lg:order-2 lg:h-full lg:w-auto lg:py-6 lg:pr-6 lg:pl-6 lg:pt-6">
+                <NarissPortrait
+                  src="/Nariss/Nariss des.png"
+                  className="relative h-full w-full"
+                />
                 <DialogueBox
                   lines={NARISS_DIALOGUE}
                   speaker="Nariss"
                   speakerClassName={narissSpeakerFont.className}
-                  className="absolute bottom-6 left-1/2 z-20 -translate-x-1/2 sm:bottom-8 md:top-1/2 md:bottom-auto md:-translate-y-1/2"
+                  className="absolute bottom-6 left-1/2 z-20 -translate-x-1/2 sm:bottom-8 lg:top-1/2 lg:bottom-auto lg:-translate-y-1/2"
                 />
-                <div className="absolute top-6 right-6 z-20 md:hidden">
+                <div className="absolute top-6 right-6 z-20 lg:hidden">
                   <span
                     aria-hidden
                     className="absolute top-1/2 left-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2 animate-pulse rounded-full blur-xl"
@@ -422,15 +436,23 @@ export default function Home() {
                 <Modal
                   open={infoOpen}
                   onClose={() => setInfoOpen(false)}
-                  backdropClassName="absolute inset-0 backdrop-blur-md bg-black/30 md:backdrop-blur-sm md:bg-black/60"
+                  backdropClassName="absolute inset-0 backdrop-blur-md bg-black/30 lg:backdrop-blur-sm lg:bg-black/60"
                 >
                   <div className="space-y-5 text-center">
                     <h2
-                      className={`${lang === "en" ? `${narissTitleFont.className} text-4xl` : "text-2xl"} text-white`}
+                      className={`${
+                        lang === "en"
+                          ? `${narissTitleFont.className} text-4xl`
+                          : "text-2xl"
+                      } text-white`}
                     >
                       {NARISS_INTRO_TITLE[lang]}
                     </h2>
-                    <LangToggle lang={lang} setLang={setLang} className="mx-auto w-fit" />
+                    <LangToggle
+                      lang={lang}
+                      setLang={setLang}
+                      className="mx-auto w-fit"
+                    />
                     <NarissStatsList lang={lang} />
                     <div className="text-left">
                       <NarissLoreParagraphs lang={lang} />
@@ -439,8 +461,8 @@ export default function Home() {
                 </Modal>
               </div>
 
-              <div className="hidden md:order-3 md:relative md:flex md:min-h-0 md:flex-col md:items-center md:justify-center md:gap-8 md:p-6 md:pb-6 md:text-center">
-                <div className="relative flex aspect-[1200/537] w-72 items-center justify-center sm:w-96 md:w-[28rem]">
+              <div className="hidden lg:order-3 lg:relative lg:flex lg:min-h-0 lg:flex-col lg:items-center lg:justify-center lg:gap-8 lg:p-6 lg:pb-6 lg:text-center">
+                <div className="relative flex aspect-[1200/537] w-72 items-center justify-center sm:w-96 lg:w-[28rem]">
                   <Image
                     src="/name-border.png"
                     alt=""
@@ -452,8 +474,8 @@ export default function Home() {
                   <h2
                     className={`relative text-slate-900 ${
                       lang === "en"
-                        ? `${narissTitleFont.className} text-4xl sm:text-5xl md:text-6xl`
-                        : "text-2xl sm:text-3xl md:text-4xl"
+                        ? `${narissTitleFont.className} text-4xl sm:text-5xl lg:text-6xl`
+                        : "text-2xl sm:text-3xl lg:text-4xl"
                     }`}
                   >
                     {NARISS_INTRO_TITLE[lang]}
@@ -470,7 +492,9 @@ export default function Home() {
             <button
               type="button"
               onClick={() =>
-                document.getElementById("card-stack")?.scrollIntoView({ behavior: "smooth" })
+                document
+                  .getElementById("card-stack")
+                  ?.scrollIntoView({ behavior: "smooth" })
               }
               aria-label="Scroll to gallery"
               className="absolute bottom-6 left-1/2 z-30 flex -translate-x-1/2 flex-col items-center gap-1 text-white/70 transition-colors hover:text-white"
@@ -496,7 +520,7 @@ export default function Home() {
                 piece; the other three corners reuse it rotated 90° at a time
                 (rotating 90° CW moves the bottom-left corner's content to the
                 top-left, 180° to the top-right, 270° to the bottom-right). */}
-            <div className="pointer-events-none absolute bottom-0 left-0 z-20 h-24 w-24 md:h-50 md:w-50">
+            <div className="pointer-events-none absolute bottom-0 left-0 z-20 h-24 w-24 lg:h-50 lg:w-50">
               <Image
                 src="/border.png"
                 alt=""
@@ -505,7 +529,7 @@ export default function Home() {
                 className="object-contain"
               />
             </div>
-            <div className="pointer-events-none absolute top-[-7] left-0 z-20 h-24 w-24 rotate-90 md:h-50 md:w-50">
+            <div className="pointer-events-none absolute top-[-7] left-0 z-20 h-24 w-24 rotate-90 lg:h-50 lg:w-50">
               <Image
                 src="/border.png"
                 alt=""
@@ -514,7 +538,7 @@ export default function Home() {
                 className="object-contain"
               />
             </div>
-            <div className="pointer-events-none absolute top-0 right-[-7] z-20 h-24 w-24 rotate-180 md:h-50 md:w-50">
+            <div className="pointer-events-none absolute top-0 right-[-7] z-20 h-24 w-24 rotate-180 lg:h-50 lg:w-50">
               <Image
                 src="/border.png"
                 alt=""
@@ -523,7 +547,7 @@ export default function Home() {
                 className="object-contain"
               />
             </div>
-            <div className="pointer-events-none absolute right-0 bottom-[-7] z-20 h-24 w-24 -rotate-90 md:h-50 md:w-50">
+            <div className="pointer-events-none absolute right-0 bottom-[-7] z-20 h-24 w-24 -rotate-90 lg:h-50 lg:w-50">
               <Image
                 src="/border.png"
                 alt=""
