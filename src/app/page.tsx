@@ -243,6 +243,19 @@ export default function Home() {
   const [lang, setLang] = useState<"vi" | "en">("en");
   const [infoOpen, setInfoOpen] = useState(false);
   const desktopHeroImageRef = useRef<HTMLImageElement>(null);
+  // Mobile gets three plain, normally-stacked sections — no pin, no wave
+  // mask. Defaults to that (mobile-first, and matches the server render, so
+  // there's no hydration mismatch); once mounted, desktop swaps to the
+  // pinned wave-transition layout.
+  const [isDesktopLayout, setIsDesktopLayout] = useState(false);
+
+  useEffect(() => {
+    const mql = window.matchMedia("(min-width: 1024px)");
+    setIsDesktopLayout(mql.matches);
+    const onChange = () => setIsDesktopLayout(mql.matches);
+    mql.addEventListener("change", onChange);
+    return () => mql.removeEventListener("change", onChange);
+  }, []);
 
   // Gate the shared chrome (hamburger menu) on this page's hero, then
   // release the gate on the way out so other pages aren't affected.
@@ -280,285 +293,291 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return (
-    <>
-      <ScrollResistance boundaryId="profile" />
-      <HeroWaveTransition
-        hero={
-          <section
-            className="absolute inset-0 h-full w-full overflow-hidden bg-cover bg-center"
-            style={{ backgroundImage: "url('/cover.png')" }}
-          >
-            <div className="relative h-full w-full overflow-hidden">
-              {/* Mobile keeps the vertical hero video; desktop gets the
+  const heroSection = (
+    <section
+      className="absolute inset-0 h-full w-full overflow-hidden bg-cover bg-center"
+      style={{ backgroundImage: "url('/cover.png')" }}
+    >
+      <div className="relative h-full w-full overflow-hidden">
+        {/* Mobile keeps the vertical hero video; desktop gets the
                   horizontally-framed still instead. */}
-              <div className="absolute inset-0 h-full w-full lg:hidden">
-                <HeroSoundStage
-                  src="/Nariss/final-optimized.mp4"
-                  mobileSrc="/Nariss/final-mobile.mp4"
-                  poster="/Nariss/final-poster.jpg"
-                  onReady={handleVideoReady}
-                />
-              </div>
-              <HeroWaveReveal className="absolute inset-0 z-0 hidden h-full w-full lg:block">
-                <Image
-                  ref={desktopHeroImageRef}
-                  src="/Nariss/desktop-horizontal.png"
-                  alt="Nariss"
-                  fill
-                  priority
-                  sizes="100vw"
-                  className="h-full w-full object-cover"
-                  onLoad={handleImageReady}
-                />
-              </HeroWaveReveal>
-              <HeroAtmosphere className="-z-10" />
-              <div
-                className={`absolute top-1/2 left-1/2 z-10 flex w-[90vw] max-w-[90vw] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-1 transition-opacity duration-700 lg:w-auto lg:max-w-[70vw] ${
-                  heroReady ? "opacity-100" : "opacity-0"
-                }`}
-              >
-                <Signature
-                  text="Nariss"
-                  color={NARISS_BLUE}
-                  fontSize={48}
-                  duration={1.5}
-                  delay={2}
-                  className="h-auto w-full"
-                />
-                <SocialLinks className="flex items-center gap-5" />
-                <p
-                  className="rounded-full border-2 px-5 py-1.5 text-sm  shadow-sm sm:text-base"
-                  style={{
-                    backgroundColor: NARISS_BADGE_CREAM,
-                    borderColor: NARISS_BADGE_BORDER,
-                    color: NARISS_BADGE_INK,
-                  }}
-                >
-                  Character created by Esyil
-                </p>
-                <p
-                  className="hidden text-[10px]  lg:block"
-                  style={{ color: NARISS_ACCENT_BLUE }}
-                >
-                  Music: @Anhthư Masa
-                </p>
-              </div>
-              <div
-                className={`absolute inset-x-0 bottom-4 z-10 flex flex-col items-center gap-0.5 px-4 text-center text-[10px]  transition-opacity duration-700 lg:hidden ${
-                  heroReady ? "opacity-100" : "opacity-0"
-                }`}
-                style={{ color: NARISS_ACCENT_BLUE }}
-              >
-                <p>Music: @Anhthư Masa</p>
-                <p>Animation: @Ly Ưu</p>
-              </div>
-            </div>
-          </section>
-        }
-        next={
-          <section
-            className="relative h-full w-full overflow-hidden"
-            style={{ backgroundColor: NARISS_BLACK }}
+        <div className="absolute inset-0 h-full w-full lg:hidden">
+          <HeroSoundStage
+            src="/Nariss/final-optimized.mp4"
+            mobileSrc="/Nariss/final-mobile.mp4"
+            poster="/Nariss/final-poster.jpg"
+            onReady={handleVideoReady}
+          />
+        </div>
+        <HeroWaveReveal className="absolute inset-0 z-0 hidden h-full w-full lg:block">
+          <Image
+            ref={desktopHeroImageRef}
+            src="/Nariss/desktop-horizontal.png"
+            alt="Nariss"
+            fill
+            priority
+            sizes="100vw"
+            className="h-full w-full object-cover"
+            onLoad={handleImageReady}
+          />
+        </HeroWaveReveal>
+        <HeroAtmosphere className="-z-10" />
+        <div
+          className={`absolute top-1/2 left-1/2 z-10 flex w-[90vw] max-w-[90vw] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-1 transition-opacity duration-700 lg:w-auto lg:max-w-[70vw] ${
+            heroReady ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <Signature
+            text="Nariss"
+            color={NARISS_BLUE}
+            fontSize={48}
+            duration={1.5}
+            delay={2}
+            className="h-auto w-full"
+          />
+          <SocialLinks className="flex items-center gap-5" />
+          <p
+            className="rounded-full border-2 px-5 py-1.5 text-sm  shadow-sm sm:text-base"
+            style={{
+              backgroundColor: NARISS_BADGE_CREAM,
+              borderColor: NARISS_BADGE_BORDER,
+              color: NARISS_BADGE_INK,
+            }}
           >
-            <Image
-              src="/Nariss/along-the-sea-bg.jpg"
-              alt=""
+            Character created by Esyil
+          </p>
+          <p
+            className="hidden text-[10px]  lg:block"
+            style={{ color: NARISS_ACCENT_BLUE }}
+          >
+            Music: @Anhthư Masa
+          </p>
+        </div>
+        <div
+          className={`absolute inset-x-0 bottom-4 z-10 flex flex-col items-center gap-0.5 px-4 text-center text-[10px]  transition-opacity duration-700 lg:hidden ${
+            heroReady ? "opacity-100" : "opacity-0"
+          }`}
+          style={{ color: NARISS_ACCENT_BLUE }}
+        >
+          <p>Music: @Anhthư Masa</p>
+          <p>Animation: @Ly Ưu</p>
+        </div>
+      </div>
+    </section>
+  );
+
+  const profileSection = (
+    <section
+      className="relative h-full w-full overflow-hidden"
+      style={{ backgroundColor: NARISS_BLACK }}
+    >
+      <Image
+        src="/Nariss/along-the-sea-bg.jpg"
+        alt=""
+        aria-hidden
+        fill
+        sizes="100vw"
+        className="pointer-events-none object-cover opacity-45"
+      />
+
+      <div className="relative z-10 flex h-full w-full flex-col overflow-y-auto lg:grid lg:grid-cols-[5rem_1.3fr_1fr] lg:overflow-visible">
+        <div
+          role="group"
+          aria-label="Lore language"
+          className="hidden lg:order-1 lg:flex lg:h-full lg:flex-col lg:items-center lg:justify-center lg:gap-3"
+        >
+          <svg
+            aria-hidden
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke={NARISS_GOLD}
+            strokeWidth={1.4}
+            className="h-5 w-5 opacity-80"
+          >
+            <circle cx="12" cy="12" r="9" />
+            <path d="M3 12h18M12 3c2.7 2.6 4.2 5.7 4.2 9s-1.5 6.4-4.2 9c-2.7-2.6-4.2-5.7-4.2-9s1.5-6.4 4.2-9Z" />
+          </svg>
+          <LangToggle lang={lang} setLang={setLang} className="flex-col" />
+        </div>
+
+        <div className="relative h-dvh w-full pt-28 lg:order-2 lg:h-full lg:w-auto lg:py-6 lg:pr-6 lg:pl-6 lg:pt-6">
+          <NarissPortrait
+            src="/Nariss/Nariss des.png"
+            className="relative h-full w-full"
+          />
+          <DialogueBox
+            lines={NARISS_DIALOGUE}
+            speaker="Nariss"
+            speakerClassName={narissSpeakerFont.className}
+            className="absolute bottom-6 left-1/2 z-20 -translate-x-1/2 sm:bottom-8 lg:top-1/2 lg:bottom-auto lg:-translate-y-1/2"
+          />
+          <div className="absolute top-6 right-6 z-20 lg:hidden">
+            <span
               aria-hidden
-              fill
-              sizes="100vw"
-              className="pointer-events-none object-cover opacity-45"
+              className="absolute top-1/2 left-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2 animate-pulse rounded-full blur-xl"
+              style={{ backgroundColor: NARISS_GOLD, opacity: 0.55 }}
             />
-
-            <div className="relative z-10 flex h-full w-full flex-col overflow-y-auto lg:grid lg:grid-cols-[5rem_1.3fr_1fr] lg:overflow-visible">
-              <div
-                role="group"
-                aria-label="Lore language"
-                className="hidden lg:order-1 lg:flex lg:h-full lg:flex-col lg:items-center lg:justify-center lg:gap-3"
-              >
-                <svg
-                  aria-hidden
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke={NARISS_GOLD}
-                  strokeWidth={1.4}
-                  className="h-5 w-5 opacity-80"
-                >
-                  <circle cx="12" cy="12" r="9" />
-                  <path d="M3 12h18M12 3c2.7 2.6 4.2 5.7 4.2 9s-1.5 6.4-4.2 9c-2.7-2.6-4.2-5.7-4.2-9s1.5-6.4 4.2-9Z" />
-                </svg>
-                <LangToggle
-                  lang={lang}
-                  setLang={setLang}
-                  className="flex-col"
-                />
-              </div>
-
-              <div className="relative h-dvh w-full pt-28 lg:order-2 lg:h-full lg:w-auto lg:py-6 lg:pr-6 lg:pl-6 lg:pt-6">
-                <NarissPortrait
-                  src="/Nariss/Nariss des.png"
-                  className="relative h-full w-full"
-                />
-                <DialogueBox
-                  lines={NARISS_DIALOGUE}
-                  speaker="Nariss"
-                  speakerClassName={narissSpeakerFont.className}
-                  className="absolute bottom-6 left-1/2 z-20 -translate-x-1/2 sm:bottom-8 lg:top-1/2 lg:bottom-auto lg:-translate-y-1/2"
-                />
-                <div className="absolute top-6 right-6 z-20 lg:hidden">
-                  <span
-                    aria-hidden
-                    className="absolute top-1/2 left-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2 animate-pulse rounded-full blur-xl"
-                    style={{ backgroundColor: NARISS_GOLD, opacity: 0.55 }}
-                  />
-                  {/* <p
+            {/* <p
                     aria-hidden
                     className={`${narissHandwrittenFont.className} absolute top-full right-1 mt-0.5 whitespace-nowrap text-lg text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]`}
                   >
                     Click here!
                   </p> */}
-                  <button
-                    type="button"
-                    onClick={() => setInfoOpen(true)}
-                    aria-label="Character info"
-                    className="relative"
-                  >
-                    <Image
-                      src="/asset5.png"
-                      alt=""
-                      aria-hidden
-                      width={1063}
-                      height={2008}
-                      className="h-14 w-auto drop-shadow-[0_6px_14px_rgba(0,0,0,0.5)]"
-                    />
-                  </button>
-                </div>
-                <Modal
-                  open={infoOpen}
-                  onClose={() => setInfoOpen(false)}
-                  backdropClassName="absolute inset-0 backdrop-blur-md bg-black/30 lg:backdrop-blur-sm lg:bg-black/60"
-                >
-                  <div className="space-y-5 text-center">
-                    <h2
-                      className={`${
-                        lang === "en"
-                          ? `${narissTitleFont.className} text-4xl`
-                          : "text-2xl"
-                      } text-white`}
-                    >
-                      {NARISS_INTRO_TITLE[lang]}
-                    </h2>
-                    <LangToggle
-                      lang={lang}
-                      setLang={setLang}
-                      className="mx-auto w-fit"
-                    />
-                    <NarissStatsList lang={lang} />
-                    <div className="text-left">
-                      <NarissLoreParagraphs lang={lang} />
-                    </div>
-                  </div>
-                </Modal>
-              </div>
-
-              <div className="hidden lg:order-3 lg:relative lg:flex lg:min-h-0 lg:flex-col lg:items-center lg:justify-center lg:gap-8 lg:p-6 lg:pb-6 lg:text-center">
-                <div className="relative flex aspect-[1200/537] w-72 items-center justify-center sm:w-96 lg:w-[28rem]">
-                  <Image
-                    src="/name-border.png"
-                    alt=""
-                    aria-hidden
-                    fill
-                    sizes="(min-width: 600px) 28rem, 24rem"
-                    className="object-contain"
-                  />
-                  <h2
-                    className={`relative text-slate-900 ${
-                      lang === "en"
-                        ? `${narissTitleFont.className} text-4xl sm:text-5xl lg:text-6xl`
-                        : "text-2xl sm:text-3xl lg:text-4xl"
-                    }`}
-                  >
-                    {NARISS_INTRO_TITLE[lang]}
-                  </h2>
-                </div>
-
-                <div className="max-w-md space-y-5">
-                  <NarissStatsList lang={lang} />
-                  <NarissLoreParagraphs lang={lang} />
-                </div>
-              </div>
-            </div>
-
             <button
               type="button"
-              onClick={() =>
-                document
-                  .getElementById("card-stack")
-                  ?.scrollIntoView({ behavior: "smooth" })
-              }
-              aria-label="Scroll to gallery"
-              className="absolute bottom-6 left-1/2 z-30 flex -translate-x-1/2 flex-col items-center gap-1 text-white/70 transition-colors hover:text-white"
+              onClick={() => setInfoOpen(true)}
+              aria-label="Character info"
+              className="relative"
             >
-              <span className="text-[10px] uppercase">Scroll</span>
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="animate-bounce"
+              <Image
+                src="/asset5.png"
+                alt=""
                 aria-hidden
-              >
-                <path d="M6 9l6 6 6-6" />
-              </svg>
+                width={1063}
+                height={2008}
+                className="h-14 w-auto drop-shadow-[0_6px_14px_rgba(0,0,0,0.5)]"
+              />
             </button>
+          </div>
+          <Modal
+            open={infoOpen}
+            onClose={() => setInfoOpen(false)}
+            backdropClassName="absolute inset-0 backdrop-blur-md bg-black/30 lg:backdrop-blur-sm lg:bg-black/60"
+          >
+            <div className="space-y-5 text-center">
+              <h2
+                className={`${
+                  lang === "en"
+                    ? `${narissTitleFont.className} text-4xl`
+                    : "text-2xl"
+                } text-white`}
+              >
+                {NARISS_INTRO_TITLE[lang]}
+              </h2>
+              <LangToggle
+                lang={lang}
+                setLang={setLang}
+                className="mx-auto w-fit"
+              />
+              <NarissStatsList lang={lang} />
+              <div className="text-left">
+                <NarissLoreParagraphs lang={lang} />
+              </div>
+            </div>
+          </Modal>
+        </div>
 
-            {/* corner ornaments — border.png is authored as the bottom-left
+        <div className="hidden lg:order-3 lg:relative lg:flex lg:min-h-0 lg:flex-col lg:items-center lg:justify-center lg:gap-8 lg:p-6 lg:pb-6 lg:text-center">
+          <div className="relative flex aspect-[1200/537] w-72 items-center justify-center sm:w-96 lg:w-[28rem]">
+            <Image
+              src="/name-border.png"
+              alt=""
+              aria-hidden
+              fill
+              sizes="(min-width: 600px) 28rem, 24rem"
+              className="object-contain"
+            />
+            <h2
+              className={`relative text-slate-900 ${
+                lang === "en"
+                  ? `${narissTitleFont.className} text-4xl sm:text-5xl lg:text-6xl`
+                  : "text-2xl sm:text-3xl lg:text-4xl"
+              }`}
+            >
+              {NARISS_INTRO_TITLE[lang]}
+            </h2>
+          </div>
+
+          <div className="max-w-md space-y-5">
+            <NarissStatsList lang={lang} />
+            <NarissLoreParagraphs lang={lang} />
+          </div>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        onClick={() =>
+          document
+            .getElementById("card-stack")
+            ?.scrollIntoView({ behavior: "smooth" })
+        }
+        aria-label="Scroll to gallery"
+        className="absolute bottom-6 left-1/2 z-30 flex -translate-x-1/2 flex-col items-center gap-1 text-white/70 transition-colors hover:text-white"
+      >
+        <span className="text-[10px] uppercase">Scroll</span>
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="animate-bounce"
+          aria-hidden
+        >
+          <path d="M6 9l6 6 6-6" />
+        </svg>
+      </button>
+
+      {/* corner ornaments — border.png is authored as the bottom-left
                 piece; the other three corners reuse it rotated 90° at a time
                 (rotating 90° CW moves the bottom-left corner's content to the
                 top-left, 180° to the top-right, 270° to the bottom-right). */}
-            <div className="pointer-events-none absolute bottom-0 left-0 z-20 h-24 w-24 lg:h-50 lg:w-50">
-              <Image
-                src="/border.png"
-                alt=""
-                fill
-                sizes="144px"
-                className="object-contain"
-              />
-            </div>
-            <div className="pointer-events-none absolute top-[-7] left-0 z-20 h-24 w-24 rotate-90 lg:h-50 lg:w-50">
-              <Image
-                src="/border.png"
-                alt=""
-                fill
-                sizes="144px"
-                className="object-contain"
-              />
-            </div>
-            <div className="pointer-events-none absolute top-0 right-[-7] z-20 h-24 w-24 rotate-180 lg:h-50 lg:w-50">
-              <Image
-                src="/border.png"
-                alt=""
-                fill
-                sizes="144px"
-                className="object-contain"
-              />
-            </div>
-            <div className="pointer-events-none absolute right-0 bottom-[-7] z-20 h-24 w-24 -rotate-90 lg:h-50 lg:w-50">
-              <Image
-                src="/border.png"
-                alt=""
-                fill
-                sizes="144px"
-                className="object-contain"
-              />
-            </div>
-          </section>
-        }
-      />
+      <div className="pointer-events-none absolute bottom-0 left-0 z-20 h-24 w-24 lg:h-50 lg:w-50">
+        <Image
+          src="/border.png"
+          alt=""
+          fill
+          sizes="144px"
+          className="object-contain"
+        />
+      </div>
+      <div className="pointer-events-none absolute top-[-7] left-0 z-20 h-24 w-24 rotate-90 lg:h-50 lg:w-50">
+        <Image
+          src="/border.png"
+          alt=""
+          fill
+          sizes="144px"
+          className="object-contain"
+        />
+      </div>
+      <div className="pointer-events-none absolute top-0 right-[-7] z-20 h-24 w-24 rotate-180 lg:h-50 lg:w-50">
+        <Image
+          src="/border.png"
+          alt=""
+          fill
+          sizes="144px"
+          className="object-contain"
+        />
+      </div>
+      <div className="pointer-events-none absolute right-0 bottom-[-7] z-20 h-24 w-24 -rotate-90 lg:h-50 lg:w-50">
+        <Image
+          src="/border.png"
+          alt=""
+          fill
+          sizes="144px"
+          className="object-contain"
+        />
+      </div>
+    </section>
+  );
+
+  return (
+    <>
+      <ScrollResistance boundaryId="profile" />
+      {isDesktopLayout ? (
+        <HeroWaveTransition hero={heroSection} next={profileSection} />
+      ) : (
+        <>
+          <div className="relative h-dvh w-full">{heroSection}</div>
+          <div id="profile" className="relative h-dvh w-full">
+            {profileSection}
+          </div>
+        </>
+      )}
 
       {/* Portrait wall — every curated Nariss look, stacking and scaling
           down as you continue to scroll past the hero. */}
