@@ -22,6 +22,7 @@
  */
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { NARISS_ACCENT_BLUE } from "@/lib/colors";
 
 const SLIDE_COUNT = 2;
 
@@ -120,7 +121,8 @@ export function MobileSectionPager({
           onClick={goBack}
           disabled={atStart}
           aria-label="Previous section"
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm transition-opacity disabled:opacity-30"
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-white/15 backdrop-blur-sm transition-opacity disabled:opacity-30"
+          style={{ color: NARISS_ACCENT_BLUE }}
         >
           <svg
             viewBox="0 0 24 24"
@@ -141,7 +143,8 @@ export function MobileSectionPager({
           onClick={goForward}
           disabled={pastSlides}
           aria-label="Next section"
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm transition-opacity disabled:opacity-30"
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-white/15 backdrop-blur-sm transition-opacity disabled:opacity-30"
+          style={{ color: NARISS_ACCENT_BLUE }}
         >
           <svg
             viewBox="0 0 24 24"

@@ -22,8 +22,16 @@ export function HeroSoundStage({
   onReady,
   children,
 }: {
+  /** Used only when `mobileSrc` isn't given. */
   src: string;
-  /** Smaller/lower-bitrate rendition served to narrow (mobile) viewports. */
+  /**
+   * Smaller/lower-bitrate rendition — used directly whenever provided,
+   * with no media-query-based source selection. This component is already
+   * only ever rendered inside a mobile-gated wrapper by its caller, so a
+   * `<source media="...">` fallback here just risked mismatching that
+   * outer breakpoint and silently falling through to a missing/desktop
+   * file instead of playing anything.
+   */
   mobileSrc?: string;
   /** First-frame still shown instantly while the video buffers. */
   poster?: string;
@@ -100,14 +108,9 @@ export function HeroSoundStage({
           playsInline
           disablePictureInPicture
           controlsList="nodownload nofullscreen noremoteplayback"
+          src={mobileSrc ?? src}
           onLoadedData={() => onReady?.()}
-        >
-          {/* Narrow viewports get the smaller, lower-bitrate rendition —
-              the browser picks the first matching <source> once, on load,
-              so this is evaluated at initial viewport width. */}
-          {mobileSrc && <source src={mobileSrc} media="(max-width: 767px)" type="video/mp4" />}
-          <source src={src} type="video/mp4" />
-        </video>
+        />
       </HeroWaveReveal>
       {children}
       {cursor && (

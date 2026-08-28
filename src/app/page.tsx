@@ -313,7 +313,6 @@ export default function Home() {
           <HeroSoundStage
             src="/Nariss/final-optimized.mp4"
             mobileSrc="/Nariss/final-mobile.mp4"
-            poster="/Nariss/final-poster.jpg"
             onReady={handleVideoReady}
           />
         </div>
@@ -554,7 +553,7 @@ export default function Home() {
           className="object-contain"
         />
       </div>
-      {/* <div className="pointer-events-none absolute top-[-7] left-0 z-20 h-24 w-24 rotate-90 lg:h-50 lg:w-50">
+      <div className="pointer-events-none absolute top-[-7] left-0 z-20 h-24 w-24 rotate-90 lg:h-50 lg:w-50">
         <Image
           src="/border.png"
           alt=""
@@ -562,7 +561,7 @@ export default function Home() {
           sizes="144px"
           className="object-contain"
         />
-      </div> */}
+      </div>
       <div className="pointer-events-none absolute top-0 right-[-7] z-20 h-24 w-24 rotate-180 lg:h-50 lg:w-50">
         <Image
           src="/border.png"
